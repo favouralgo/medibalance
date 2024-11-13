@@ -1,0 +1,183 @@
+/* Variables */
+.add-product-page {
+    padding: 1.5rem 0;
+}
+
+/* Page specific styles */
+.add-product-page .product-header {
+    margin-bottom: 2rem;
+}
+
+.add-product-page .product-header h1 {
+    font-family: var(--font-family);
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+}
+
+.add-product-page .product-header p {
+    color: var(--text-muted);
+}
+
+/* Form Card */
+.add-product-page .product-form-card {
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.add-product-page .product-form-card .card-header {
+    background-color: white;
+    border-bottom: 1px solid #f1f5f9;
+    padding: 1.25rem;
+}
+
+/* Form Elements */
+.add-product-page .product-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.add-product-page .form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.add-product-page .form-control,
+.add-product-page .form-select {
+    border: 1px solid #e2e8f0;
+    padding: 0.625rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.add-product-page .form-control:focus,
+.add-product-page .form-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.add-product-page .input-group-text {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+}
+
+
+/* Error messages*/
+.error-message-display {
+    margin: 20px 0;
+}
+
+.error-alert {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 0.375rem;
+}
+
+.error-alert-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.error-alert-danger {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+.error-btn-close {
+    float: right;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    opacity: .5;
+    padding: 0;
+    background: transparent;
+    border: 0;
+}
+
+.error-btn-close:hover {
+    opacity: .75;
+    cursor: pointer;
+}
+
+/* Action Buttons - Updated */
+.btn-add {
+    background-color: #009245 !important; /* Green background */
+    color: white !important;
+    padding: 8px 16px !important;
+    border: none !important;
+    border-radius: 4px !important;
+    cursor: pointer;
+    font-family: var(--font-family) !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    transition: background-color 0.3s ease;
+    text-decoration: none !important;
+    display: inline-block !important;
+    line-height: 1.5 !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.btn-add:hover {
+    background-color: #007c3a !important;
+    color: white !important;
+}
+
+/* Make sure the container is styled correctly */
+.form-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .add-product-page .form-actions {
+        flex-direction: column;
+    }
+    
+    .btn-add {
+        width: 100%;
+        justify-content: center;
+        padding: 10px 16px;
+    }
+
+    .add-product-page .product-header {
+        padding: 1rem 0;
+    }
+    
+    .add-product-page .card-body {
+        padding: 1.25rem;
+    }
+}
+
+/* Form fields styles */
+.form-control {
+    font-family: var(--font-family);
+}
+
+.input-group-text {
+    font-family: var(--font-family);
+}
+
+textarea.form-control {
+    font-family: var(--font-family);
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Utility Classes */
+.text-muted {
+    color: var(--text-muted) !important;
+    font-family: var(--font-family);
+}
+
+.card-title {
+    font-family: var(--font-family);
+    font-weight: 600;
+}

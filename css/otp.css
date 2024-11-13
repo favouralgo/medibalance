@@ -1,0 +1,64 @@
+/*
+ * 
+ * This CSS file contains styles for the OTP (One-Time Password) feature.
+ * It includes styles for the body element and other related components.
+ */
+body {
+    font-family: 'Space Grotesk', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #ffffff;
+}
+.otp-container {
+    background-color: rgb(255, 255, 255);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 0px 0px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+h2 {
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+.otp-inputs {
+    display: flex;
+    justify-content: center;
+    gap: 8px; /*0.5rem*/
+    margin-bottom: 1.5rem;
+}
+.otp-inputs input {
+    width: 40px; /*2.5rem*/
+    height: 40px; /*2.5rem*/
+    text-align: center;
+    font-size: 1.25rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+.otp-inputs input:focus {
+    border-color: #45a049;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.otp-inputs input::placeholder {
+    color: #ccc;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+}
+button:hover {
+    background-color: #45a049;
+}

@@ -1,0 +1,369 @@
+/* Container */
+.inv-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Header Section */
+.inv-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    gap: 2rem;
+}
+
+.inv-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #1f2937;
+    min-width: 200px;
+}
+
+.inv-header-inputs {
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+.inv-input-group {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+/* Form Inputs */
+.inv-form-input {
+    padding: 0.5rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.2s;
+    height: 40px;
+}
+
+.inv-form-input:focus {
+    border-color: #3b82f6;
+}
+
+/* Number Input */
+.inv-number-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.inv-number-input input {
+    padding-left: 4rem;
+    width: 200px;
+    height: 40px;
+}
+
+.inv-number-input label {
+    position: absolute;
+    left: 1rem;
+    color: #6b7280;
+    z-index: 1;
+}
+
+/* Date inputs specific styling */
+.inv-date-input {
+    width: 200px !important;  /* Increased from 160px */
+    height: 40px !important;
+}
+
+/* Remove default date input placeholder styling */
+.inv-date-input::-webkit-datetime-edit-text,
+.inv-date-input::-webkit-datetime-edit-month-field,
+.inv-date-input::-webkit-datetime-edit-day-field,
+.inv-date-input::-webkit-datetime-edit-year-field {
+    color: #6b7280;
+}
+
+.inv-date-input::-webkit-calendar-picker-indicator {
+    margin-left: 0.5rem;
+}
+
+/* Style for empty date input */
+.inv-date-input:invalid::-webkit-datetime-edit {
+    color: #6b7280;
+}
+
+/* Info Section */
+.inv-info-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Form Grid */
+.inv-form-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+/* Cards */
+.inv-card {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+}
+
+.inv-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.inv-card-header h2 {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #1f2937;
+    margin: 0;
+}
+
+.inv-select-customer {
+    color: #003c9d;
+    text-decoration: none;
+    font-size: 0.875rem;
+}
+
+.inv-select-customer:hover {
+    color: #003bbc;
+}
+
+/* Products Section */
+.inv-products-section {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem 1.75rem 1.5rem 2.5rem;
+    position: relative;
+    width: 100%;
+}
+
+.inv-products-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.5rem;
+}
+
+.inv-products-table th {
+    text-align: left;
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    font-weight: 500;
+    color: #1f2937;
+    white-space: nowrap;
+}
+
+.inv-products-table td {
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+}
+
+/* Column widths */
+.inv-products-table th:nth-child(1) { width: 40%; }
+.inv-products-table th:nth-child(2) { width: 12%; }
+.inv-products-table th:nth-child(3) { width: 15%; }
+.inv-products-table th:nth-child(4) { width: 15%; }
+.inv-products-table th:nth-child(5) { width: 15%; }
+.inv-products-table th:nth-child(6) { width: 3%; }
+
+/* Product Cell */
+.inv-product-cell {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.inv-product-input {
+    flex: 1;
+    min-width: 200px;
+}
+
+.inv-select-product {
+    color: #003a98;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Input Specific Styles */
+.inv-qty-input {
+    width: 100px !important;
+}
+
+.inv-price-input {
+    width: 150px !important;
+}
+
+.inv-discount-input {
+    width: 120px !important;
+}
+
+/* Subtotal */
+.inv-subtotal {
+    color: #1f2937;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 1rem;
+}
+
+/* Action Cell */
+.inv-action-cell {
+    width: auto;
+    text-align: center;
+    padding: 0.75rem;
+    padding-right: 0.75rem;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.inv-remove-row-btn {
+    background-color: #ef4444;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 50%;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    padding: 0;
+    position: relative;
+    left: 0;
+}
+
+.inv-remove-row-btn:hover {
+    background-color: #dc2626;
+}
+
+/* Table Actions */
+.inv-table-actions {
+    margin-top: 1rem;
+    padding: 0 1rem;
+}
+
+.inv-add-row-btn {
+    background-color: #009d54;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.inv-add-row-btn:hover {
+    background-color: #46ffcd;
+}
+
+/* Totals Section */
+.inv-totals-section {
+    display: flex;
+    justify-content: flex-end;
+    margin: 2rem 0;
+    padding-right: 1rem;
+}
+
+.inv-totals-container {
+    width: 300px;
+}
+
+.inv-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+}
+
+/* Shipping Input */
+.inv-shipping-input {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.inv-shipping-input input {
+    width: 100px;
+}
+
+/* Checkbox */
+.inv-checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.inv-final-total {
+    font-weight: 600;
+    border-top: 1px solid #e5e7eb;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+}
+
+/* Form Actions */
+.inv-form-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.inv-create-btn {
+    background-color: #10b981;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.inv-create-btn:hover {
+    background-color: #059669;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .inv-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .inv-header-inputs {
+        width: 100%;
+    }
+    
+    .inv-input-group {
+        flex-wrap: wrap;
+    }
+    
+    .inv-info-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .inv-products-table {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    .inv-totals-section {
+        padding-right: 0;
+    }
+    
+    .inv-totals-container {
+        width: 100%;
+    }
+}

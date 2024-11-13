@@ -1,0 +1,283 @@
+/* Container */
+.wst-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Card Styles */
+.wst-section.wst-card {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 3rem;
+    margin: 1rem;
+}
+
+/* Header */
+.wst-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.wst-header-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.25rem;
+    color: #1f2937;
+}
+
+.wst-header-title i {
+    color: #3498db;
+}
+
+/* Balance */
+.wst-balance {
+    text-align: right;
+}
+
+.wst-balance-label {
+    display: block;
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+}
+
+.wst-balance-amount {
+    color: #10b981;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+/* Content Layout */
+.wst-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.wst-group {
+    width: 100%;
+}
+
+.wst-section-title {
+    font-size: 1.25rem;
+    color: #1f2937;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+/* Notification Items */
+.wst-notification-item {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.wst-notification-item:hover {
+    border-color: #3498db;
+}
+
+.wst-notification-info {
+    flex-grow: 1;
+}
+
+.wst-notification-title {
+    color: #1f2937;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.wst-notification-desc {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+/* Toggle Switch */
+.wst-toggle {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 24px;
+}
+
+.wst-toggle input {
+    display: none;
+}
+
+.wst-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #e5e7eb;
+    border-radius: 24px;
+    transition: 0.4s;
+}
+
+.wst-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.4s;
+}
+
+.wst-toggle input:checked + .wst-toggle-slider {
+    background-color: #3498db;
+}
+
+.wst-toggle input:checked + .wst-toggle-slider:before {
+    transform: translateX(24px);
+}
+
+/* Payment Card */
+.wst-payment-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.wst-payment-card:hover {
+    border-color: #3498db;
+}
+
+.wst-payment-info {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.wst-payment-info i {
+    color: #3498db;
+    font-size: 1.5rem;
+}
+
+.wst-payment-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.wst-card-number {
+    color: #1f2937;
+    font-weight: 500;
+}
+
+.wst-card-expiry {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+/* Action Buttons */
+.wst-payment-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.wst-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 0.5rem;
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.wst-btn:hover {
+    transform: translateY(-1px);
+}
+
+.wst-btn-edit {
+    background-color: #3498db;
+}
+
+.wst-btn-edit:hover {
+    background-color: #2980b9;
+}
+
+.wst-btn-delete {
+    background-color: #ef4444;
+}
+
+.wst-btn-delete:hover {
+    background-color: #dc2626;
+}
+
+/* Form Actions */
+.wst-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 2rem;
+}
+
+.wst-submit-btn {
+    background-color: #10b981;
+    color: white;
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.wst-submit-btn:hover {
+    background-color: #059669;
+    transform: translateY(-1px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .wst-container {
+        padding: 1rem;
+    }
+    
+    .wst-section.wst-card {
+        padding: 1.5rem;
+    }
+    
+    .wst-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .wst-balance {
+        text-align: left;
+    }
+    
+    .wst-payment-info {
+        gap: 1rem;
+    }
+    
+    .wst-payment-actions {
+        gap: 0.25rem;
+    }
+}

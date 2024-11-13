@@ -1,0 +1,172 @@
+/* product-list.css */
+.product-list-container {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    padding: 24px;
+    margin: 20px;
+}
+
+/* Ensure unique class names */
+.product-list-header {
+    margin-bottom: 24px;
+}
+
+.product-list-header h1 {
+    font-size: 2rem;
+    color: var(--text-color);
+    margin: 0 0 16px 0;
+    font-weight: 600;
+    font-family: var(--font-family);
+}
+
+/* More specific selectors */
+.product-list-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.entries-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-family);
+}
+
+.entries-select {
+    padding: 8px;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    font-family: var(--font-family);
+}
+
+.search-control {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.search-input {
+    padding: 8px 35px 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    font-family: var(--font-family);
+    min-width: 200px;
+}
+
+.search-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8; /* Subtle gray color for the icon */
+    pointer-events: none; 
+}
+
+.product-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.product-table th {
+    background: #f8f9fa;
+    padding: 12px;
+    text-align: left;
+    color: var(--text-color);
+    font-weight: 500;
+    border-bottom: 2px solid #e2e8f0;
+    font-family: var(--font-family);
+}
+
+.product-table td {
+    padding: 12px;
+    border-bottom: 1px solid #e2e8f0;
+    color: var(--text-color);
+    font-family: var(--font-family);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-edit, 
+.btn-delete {
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.btn-edit {
+    background: #8b5cf6;
+    color: white;
+}
+
+.btn-delete {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-edit:hover, 
+.btn-delete:hover {
+    opacity: 0.9;
+}
+
+.product-pagination {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+}
+
+.pagination-button {
+    padding: 8px 16px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    color: var(--text-color);
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: var(--font-family);
+}
+
+.pagination-button.active {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+.sort-icon {
+    margin-left: 4px;
+    color: #cbd5e1;
+}
+
+@media (max-width: 768px) {
+    .product-list-container {
+        margin: 10px;
+        padding: 16px;
+    }
+
+    .product-list-controls {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+
+    .search-control input {
+        width: 100%;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .product-table {
+        display: block;
+        overflow-x: auto;
+    }
+}
