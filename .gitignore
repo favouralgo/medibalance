@@ -1,4 +1,25 @@
 password.txt
-settings/*
-db/*
+password.txt
+
+# PHP Configuration Files
 actions/customer_action.php
+**/config/*.php
+*.config.php
+.env
+
+# Credentials and Sensitive Data
+**/smtp*.php
+*credentials*
+*.pem
+*.key
+*.env*
+
+# Logs that might contain sensitive data
+*.log
+error_log
+debug.log
+
+# IDE and System Files
+.vscode/
+.idea/
+.DS_Store
