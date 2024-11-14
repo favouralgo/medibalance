@@ -1,5 +1,5 @@
 <?php
-require_once("../settings/db_class.php");
+require_once(__DIR__ . "/../settings/db_class.php");
 
 class product_class extends db_connection {
     //--INSERT FUNCTION--//
@@ -10,62 +10,81 @@ class product_class extends db_connection {
         $product_quantity = mysqli_real_escape_string($this->db_conn(), $product_quantity);
         
         //--INSERT QUERY--//
-        $sql = "INSERT INTO `products`(`product_name`, `product_description`, `product_price`, `product_quantity`) 
-                VALUES ('$product_name','$product_description','$product_price','$product_quantity')";
-        return $this->db_query($sql);
+        $sql = "INSERT INTO `product`(`product_name`, `product_description`, `product_price`, `product_quantity`) 
+                VALUES (?, ?, ?, ?)";
+        $stmt = $this->db_conn()->prepare($sql);
+        if (!$stmt) {
+            throw new Exception("Prepare statement failed: " . $this->db_conn()->error);
+        }
+        $stmt->bind_param("ssdi", $product_name, $product_description, $product_price, $product_quantity);
+        if (!$stmt->execute()) {
+            throw new Exception("Execute statement failed: " . $stmt->error);
+        }
+        return true;
     }
 
     //--SELECT ALL PRODUCTS FUNCTION--//
     public function get_all_products() {
-        $sql = "SELECT * FROM `products`";
-        $result = mysqli_query($this->db_conn(), $sql);
+        $sql = "SELECT * FROM `product`";
+        $result = $this->db_conn()->query($sql);
         
         if (!$result) {
-            return false; // Return false if query fails
+            throw new Exception("Query failed: " . $this->db_conn()->error);
         }
         
         $products = array();
-        while ($row = mysqli_fetch_assoc($result)) {
+        while ($row = $result->fetch_assoc()) {
             $products[] = $row;
         }
         return $products;
     }
 
-    //--SELECT SPECIFIC PRODUCT FUNCTION--//
+    //--SELECT ONE FUNCTION--//
     public function get_one_product($product_id) {
-        $product_id = mysqli_real_escape_string($this->db_conn(), $product_id);
-        $sql = "SELECT * FROM `products` WHERE `product_id`='$product_id'";
-        $result = mysqli_query($this->db_conn(), $sql);
-        
-        if (!$result) {
-            return false; // Return false if query fails
+        $sql = "SELECT * FROM `product` WHERE `product_id` = ?";
+        $stmt = $this->db_conn()->prepare($sql);
+        if (!$stmt) {
+            throw new Exception("Prepare statement failed: " . $this->db_conn()->error);
         }
-        
-        return mysqli_fetch_assoc($result);
+        $stmt->bind_param("i", $product_id);
+        if (!$stmt->execute()) {
+            throw new Exception("Execute statement failed: " . $stmt->error);
+        }
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
     }
 
     //--UPDATE FUNCTION--//
     public function update_product($product_id, $product_name, $product_description, $product_price, $product_quantity) {
-        $product_id = mysqli_real_escape_string($this->db_conn(), $product_id);
         $product_name = mysqli_real_escape_string($this->db_conn(), $product_name);
         $product_description = mysqli_real_escape_string($this->db_conn(), $product_description);
         $product_price = mysqli_real_escape_string($this->db_conn(), $product_price);
         $product_quantity = mysqli_real_escape_string($this->db_conn(), $product_quantity);
         
-        $sql = "UPDATE `products` 
-                SET `product_name`='$product_name', 
-                    `product_description`='$product_description', 
-                    `product_price`='$product_price', 
-                    `product_quantity`='$product_quantity' 
-                WHERE `product_id`='$product_id'";
-        return $this->db_query($sql);
+        $sql = "UPDATE `product` SET `product_name` = ?, `product_description` = ?, `product_price` = ?, `product_quantity` = ? WHERE `product_id` = ?";
+        $stmt = $this->db_conn()->prepare($sql);
+        if (!$stmt) {
+            throw new Exception("Prepare statement failed: " . $this->db_conn()->error);
+        }
+        $stmt->bind_param("ssdii", $product_name, $product_description, $product_price, $product_quantity, $product_id);
+        if (!$stmt->execute()) {
+            throw new Exception("Execute statement failed: " . $stmt->error);
+        }
+        return true;
     }
 
     //--DELETE FUNCTION--//
     public function delete_product($product_id) {
-        $product_id = mysqli_real_escape_string($this->db_conn(), $product_id);
-        $sql = "DELETE FROM `products` WHERE `product_id`='$product_id'";
-        return $this->db_query($sql);
+        $sql = "DELETE FROM `product` WHERE `product_id` = ?";
+        $stmt = $this->db_conn()->prepare($sql);
+        if (!$stmt) {
+            throw new Exception("Prepare statement failed: " . $this->db_conn()->error);
+        }
+        $stmt->bind_param("i", $product_id);
+        if (!$stmt->execute()) {
+            throw new Exception("Execute statement failed: " . $stmt->error);
+        }
+        return true;
     }
 }
 ?>

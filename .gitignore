@@ -1,1 +1,4 @@
 password.txt
+settings/*
+db/*
+actions/customer_action.php

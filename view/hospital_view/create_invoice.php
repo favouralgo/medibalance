@@ -110,10 +110,10 @@
                     <input type="number" class="inv-form-input" placeholder="0.00" step="0.01">
                 </div>
             </div>
-            <div class="inv-total-row">
+            <!-- <div class="inv-total-row">
                 <span>TAX/VAT:</span>
                 <span>$0.00</span>
-            </div>
+            </div> -->
             <div class="inv-total-row">
                 <label class="inv-checkbox-container">
                     <input type="checkbox">

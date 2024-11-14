@@ -1,17 +1,14 @@
 <?php
-require_once('../controllers/product_controller.php');
+require_once('../../controllers/product_controller.php');
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id'])) {
+    $product_id = $_POST['product_id'];
+    $result = delete_product_ctr($product_id);
 
-// Delete brand
-if (isset($_GET['delete'])) {
-    $productId = $_GET['delete'];
-    $delete_product = delete_product_ctr($productId);
-    if ($delete_product !== false) {
-        header("Location: ../view/product.php");
+    if ($result) {
+        echo json_encode(['success' => true]);
     } else {
-        echo "Failed to delete brand";
+        echo json_encode(['success' => false, 'message' => 'Failed to delete product']);
     }
 }
-
-
 ?>

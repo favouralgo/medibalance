@@ -1,7 +1,7 @@
 <?php include '../includes/header.php'; ?>
 
 <div class="customer-form-container">
-    <form class="customer-form" method="POST" action="">
+    <form class="customer-form" method="POST" action="../../actions/customer_action.php">
         <div class="form-section card">
             <h2 class="section-title">Customer Information</h2>
             <div class="form-fields-grid">
@@ -96,5 +96,9 @@
         </div>
     </form>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="../../js/customer.js"></script>
 
 <?php include '../includes/footer.php'; ?>
