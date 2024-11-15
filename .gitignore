@@ -1,5 +1,4 @@
 password.txt
-password.txt
 
 # PHP Configuration Files
 actions/customer_action.php
@@ -23,3 +22,6 @@ debug.log
 .vscode/
 .idea/
 .DS_Store
+
+# Database
+settings/db_cred.php
