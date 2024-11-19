@@ -1,7 +1,7 @@
 <?php
 require_once(__DIR__ . "/../settings/db_class.php");
 
-class product_class extends db_connection {
+class ProductModel extends db_connection {
     //--INSERT FUNCTION--//
     public function add_product($product_name, $product_description, $product_price, $product_quantity) {
         $product_name = mysqli_real_escape_string($this->db_conn(), $product_name);
@@ -81,6 +81,19 @@ class product_class extends db_connection {
             throw new Exception("Prepare statement failed: " . $this->db_conn()->error);
         }
         $stmt->bind_param("i", $product_id);
+        if (!$stmt->execute()) {
+            throw new Exception("Execute statement failed: " . $stmt->error);
+        }
+        return true;
+    }
+
+    public function decrement_product_quantity($product_id, $quantity) {
+        $sql = "UPDATE product SET product_quantity = product_quantity - ? WHERE product_id = ?";
+        $stmt = $this->db_conn()->prepare($sql);
+        if (!$stmt) {
+            throw new Exception("Prepare statement failed: " . $this->db_conn()->error);
+        }
+        $stmt->bind_param("ii", $quantity, $product_id);
         if (!$stmt->execute()) {
             throw new Exception("Execute statement failed: " . $stmt->error);
         }

@@ -1,4 +1,4 @@
-<?php include '../includes/header.php'; ?>
+<?php include '../pincludes/header.php'; ?>
 
 <!-- Dashboard Content -->
 <div class="container-fluid">
@@ -228,4 +228,4 @@
     </div>
 </div>
 
-<?php include '../includes/footer.php'; ?>
+<?php include '../pincludes/footer.php'; ?>

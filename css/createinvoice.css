@@ -29,8 +29,20 @@
 
 .inv-input-group {
     display: flex;
-    gap: 1rem;
-    align-items: center;
+    gap: 20px;
+    align-items: flex-end;
+}
+
+/* Date Input Styles */
+.date-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.date-input-container label {
+    font-size: 14px;
+    color: #666;
 }
 
 /* Form Inputs */
@@ -46,6 +58,19 @@
 
 .inv-form-input:focus {
     border-color: #3b82f6;
+}
+
+.inv-form-input[type="date"] {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+    min-width: 200px;
+}
+
+.inv-form-input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    padding: 5px;
 }
 
 /* Number Input */
@@ -68,33 +93,10 @@
     z-index: 1;
 }
 
-/* Date inputs specific styling */
-.inv-date-input {
-    width: 200px !important;  /* Increased from 160px */
-    height: 40px !important;
-}
-
-/* Remove default date input placeholder styling */
-.inv-date-input::-webkit-datetime-edit-text,
-.inv-date-input::-webkit-datetime-edit-month-field,
-.inv-date-input::-webkit-datetime-edit-day-field,
-.inv-date-input::-webkit-datetime-edit-year-field {
-    color: #6b7280;
-}
-
-.inv-date-input::-webkit-calendar-picker-indicator {
-    margin-left: 0.5rem;
-}
-
-/* Style for empty date input */
-.inv-date-input:invalid::-webkit-datetime-edit {
-    color: #6b7280;
-}
-
 /* Info Section */
 .inv-info-section {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 2rem;
     margin-bottom: 2rem;
 }
@@ -102,7 +104,14 @@
 /* Form Grid */
 .inv-form-grid {
     display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
+}
+
+/* Full width inputs in grid */
+.inv-form-grid input:nth-child(3),
+.inv-form-grid input:nth-child(4) {
+    grid-column: span 2;
 }
 
 /* Cards */
@@ -145,6 +154,7 @@
     padding: 1.5rem 1.75rem 1.5rem 2.5rem;
     position: relative;
     width: 100%;
+    margin-top: 2rem;
 }
 
 .inv-products-table {
@@ -192,6 +202,12 @@
     text-decoration: none;
     white-space: nowrap;
     flex-shrink: 0;
+    font-size: 0.875rem;
+}
+
+.inv-select-product:hover {
+    color: #002c73;
+    text-decoration: underline;
 }
 
 /* Input Specific Styles */
@@ -210,10 +226,7 @@
 /* Subtotal */
 .inv-subtotal {
     color: #1f2937;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-right: 1rem;
+    font-weight: 500;
 }
 
 /* Action Cell */
@@ -242,6 +255,7 @@
     padding: 0;
     position: relative;
     left: 0;
+    transition: background-color 0.2s;
 }
 
 .inv-remove-row-btn:hover {
@@ -255,7 +269,7 @@
 }
 
 .inv-add-row-btn {
-    background-color: #009d54;
+    background-color: #059669;
     color: white;
     padding: 0.5rem 1rem;
     border: none;
@@ -266,7 +280,7 @@
 }
 
 .inv-add-row-btn:hover {
-    background-color: #46ffcd;
+    background-color: #047857;
 }
 
 /* Totals Section */
@@ -279,6 +293,10 @@
 
 .inv-totals-container {
     width: 300px;
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
 }
 
 .inv-total-row {
@@ -286,37 +304,22 @@
     justify-content: space-between;
     align-items: center;
     padding: 0.75rem 0;
-}
-
-/* Shipping Input */
-.inv-shipping-input {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.inv-shipping-input input {
-    width: 100px;
-}
-
-/* Checkbox */
-.inv-checkbox-container {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    color: #4b5563;
 }
 
 .inv-final-total {
     font-weight: 600;
+    color: #1f2937;
     border-top: 1px solid #e5e7eb;
     margin-top: 0.5rem;
-    padding-top: 0.5rem;
+    padding-top: 1rem;
 }
 
 /* Form Actions */
 .inv-form-actions {
     display: flex;
     justify-content: flex-end;
+    margin-top: 2rem;
 }
 
 .inv-create-btn {
@@ -336,6 +339,16 @@
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+    .inv-info-section {
+        grid-template-columns: 1fr;
+    }
+
+    .inv-form-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
 @media (max-width: 768px) {
     .inv-header {
         flex-direction: column;
@@ -347,16 +360,33 @@
     }
     
     .inv-input-group {
-        flex-wrap: wrap;
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+    }
+
+    .inv-number-input,
+    .date-input-container,
+    .inv-form-input[type="date"] {
+        width: 100%;
     }
     
-    .inv-info-section {
+    .inv-number-input input {
+        width: 100%;
+    }
+
+    .inv-form-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .inv-products-table {
         display: block;
         overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    .inv-products-section {
+        padding: 1rem;
     }
     
     .inv-totals-section {
@@ -365,5 +395,42 @@
     
     .inv-totals-container {
         width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .inv-container {
+        padding: 1rem;
+    }
+
+    .inv-title {
+        font-size: 1.5rem;
+    }
+
+    .inv-form-input {
+        font-size: 0.875rem;
+    }
+
+    .inv-create-btn {
+        width: 100%;
+    }
+}
+
+/* Print styles */
+@media print {
+    .inv-container {
+        padding: 0;
+    }
+
+    .inv-products-section,
+    .inv-card {
+        box-shadow: none;
+    }
+
+    .inv-remove-row-btn,
+    .inv-add-row-btn,
+    .inv-select-product,
+    .inv-select-customer {
+        display: none;
     }
 }

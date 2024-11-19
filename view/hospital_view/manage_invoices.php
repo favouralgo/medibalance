@@ -31,7 +31,7 @@
                 <th>Issue Date <i class="fas fa-sort sort-icon"></i></th>
                 <th>Due Date <i class="fas fa-sort sort-icon"></i></th>
                 <th>Status <i class="fas fa-sort sort-icon"></i></th>
-                <th>Action</th>
+                <th>Amount</th>
             </tr>
         </thead>
         <tbody>
@@ -41,25 +41,15 @@
                 <td>12/07/2024</td>
                 <td>13/09/2024</td>
                 <td><span class="badge bg-success">Paid</span></td>
-                <td>
-                    <div class="action-buttons">
-                        <button class="btn-edit"><i class="fas fa-edit"></i></button>
-                        <button class="btn-delete"><i class="fas fa-trash"></i></button>
-                    </div>
-                </td>
+                <td>$30.00</td>
             </tr>
             <tr>
                 <td>Service Five</td>
                 <td>This is a sample service five.</td>
                 <td>11/07/2024</td>
                 <td>12/08/2024</td>
-                <td><span class="badge bg-warning">Pending</span></td>
-                <td>
-                    <div class="action-buttons">
-                        <button class="btn-edit"><i class="fas fa-edit"></i></button>
-                        <button class="btn-delete"><i class="fas fa-trash"></i></button>
-                    </div>
-                </td>
+                <td><span class="badge bg-warning">Unpaid</span></td>
+                <td>$30.00</td>
             </tr>
             <!-- More rows as needed -->
         </tbody>

@@ -1,35 +1,35 @@
 <?php
-//connect to the product class
 require_once(__DIR__ ."/../classes/product_class.php");
 
-//--INSERT--//
-function add_product_ctr($product_name, $product_description, $product_price, $product_quantity) {
-    $product = new product_class();
-    return $product->add_product($product_name, $product_description, $product_price, $product_quantity);
-}
+class ProductController {
+    private $productModel;
 
-//--SELECT ALL--//
-function get_all_products_ctr() {
-    $product = new product_class();
-    return $product->get_all_products();
-}
+    public function __construct() {
+        $this->productModel = new ProductModel();
+    }
 
-//--SELECT ONE--//
-function get_one_product_ctr($product_id) {
-    $product = new product_class();
-    return $product->get_one_product($product_id);
-}
+    public function add_product_ctr($product_name, $product_description, $product_price, $product_quantity) {
+        return $this->productModel->add_product($product_name, $product_description, $product_price, $product_quantity);
+    }
 
-//--UPDATE--//
-function update_product_ctr($product_id, $product_name, $product_description, $product_price, $product_quantity) {
-    $product = new product_class();
-    return $product->update_product($product_id, $product_name, $product_description, $product_price, $product_quantity);
-}
+    public function get_all_products_ctr() {
+        return $this->productModel->get_all_products();
+    }
 
-//--DELETE--//
-function delete_product_ctr($product_id) {
-    $product = new product_class(); 
-    return $product->delete_product($product_id);
-}
+    public function get_one_product_ctr($product_id) {
+        return $this->productModel->get_one_product($product_id);
+    }
 
+    public function update_product_ctr($product_id, $product_name, $product_description, $product_price, $product_quantity) {
+        return $this->productModel->update_product($product_id, $product_name, $product_description, $product_price, $product_quantity);
+    }
+
+    public function delete_product_ctr($product_id) {
+        return $this->productModel->delete_product($product_id);
+    }
+
+    public function decrement_product_quantity_ctr($product_id, $quantity) {
+        return $this->productModel->decrement_product_quantity($product_id, $quantity);
+    }
+}
 ?>

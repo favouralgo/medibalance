@@ -1,9 +1,12 @@
 <?php 
 include '../includes/header.php';
-require('../../controllers/product_controller.php');
+require_once('../../controllers/product_controller.php');
 
-// Get all products
-$products = get_all_products_ctr();
+// Initialize Product Controller
+$productController = new ProductController();
+
+// Get all products using the controller instance
+$products = $productController->get_all_products_ctr();
 
 // Handle search if submitted
 $search_query = isset($_GET['search']) ? $_GET['search'] : '';
@@ -35,6 +38,7 @@ $offset = ($current_page - 1) * $entries_per_page;
 // Get products for current page
 $current_products = array_slice($filtered_products, $offset, $entries_per_page);
 ?>
+
 
 <div class="product-list-container">
     <!-- Message Display -->
@@ -140,35 +144,36 @@ $current_products = array_slice($filtered_products, $offset, $entries_per_page);
 </div>
 
 <!-- Edit Product Modal -->
-<div class="modal" id="editProductModal">
+<div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Edit Product</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="editProductForm">
                     <input type="hidden" id="editProductId" name="product_id">
-                    <div class="form-group">
-                        <label for="editProductName">Product Name</label>
+                    <div class="mb-3">
+                        <label for="editProductName" class="form-label">Product Name</label>
                         <input type="text" class="form-control" id="editProductName" name="product_name" required>
                     </div>
-                    <div class="form-group">
-                        <label for="editProductDescription">Description</label>
+                    <div class="mb-3">
+                        <label for="editProductDescription" class="form-label">Description</label>
                         <textarea class="form-control" id="editProductDescription" name="product_description" required></textarea>
                     </div>
-                    <div class="form-group">
-                        <label for="editProductPrice">Price</label>
-                        <input type="number" class="form-control" id="editProductPrice" name="product_price" required>
+                    <div class="mb-3">
+                        <label for="editProductPrice" class="form-label">Price</label>
+                        <input type="number" class="form-control" id="editProductPrice" name="product_price" step="0.01" min="0" required>
                     </div>
-                    <div class="form-group">
-                        <label for="editProductQuantity">Quantity</label>
-                        <input type="number" class="form-control" id="editProductQuantity" name="product_quantity" required>
+                    <div class="mb-3">
+                        <label for="editProductQuantity" class="form-label">Quantity</label>
+                        <input type="number" class="form-control" id="editProductQuantity" name="product_quantity" min="0" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <div class="modal-footer px-0 pb-0">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -194,6 +199,9 @@ $current_products = array_slice($filtered_products, $offset, $entries_per_page);
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../../js/product.js"></script>
 
 <?php include '../includes/footer.php'; ?>

@@ -51,12 +51,6 @@
                         <div class="collapse" id="invoicesDropdown">
                             <ul class="nav flex-column ms-3 sub-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="../hospital_view/create_invoice.php">
-                                        <i class="fas fa-plus fa-sm"></i>
-                                        <span>Create Invoice</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
                                     <a class="nav-link" href="../hospital_view/manage_invoices.php">
                                         <i class="fas fa-cog fa-sm"></i>
                                         <span>Manage Invoices</span>
@@ -72,53 +66,6 @@
                         </div>
                     </li>
 
-                    <li class="nav-item">
-                        <a href="#" class="nav-link dropdown-toggle collapsed" data-bs-toggle="collapse" data-bs-target="#productsDropdown" aria-expanded="false">
-                            <i class="fas fa-box"></i>
-                            <span>Products</span>
-                            <i class="fas fa-angle-down"></i>
-                        </a>
-                        <div class="collapse" id="productsDropdown">
-                            <ul class="nav flex-column ms-3 sub-menu">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="../hospital_view/add_product.php">
-                                        <i class="fas fa-plus fa-sm"></i>
-                                        <span>Add Product</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="../hospital_view/manage_products.php">
-                                        <i class="fas fa-cog fa-sm"></i>
-                                        <span>Manage Products</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-
-                    <li class="nav-item">
-                        <a href="#" class="nav-link dropdown-toggle collapsed" data-bs-toggle="collapse" data-bs-target="#customersDropdown" aria-expanded="false">
-                            <i class="fas fa-users"></i>
-                            <span>Customers</span>
-                            <i class="fas fa-angle-down"></i>
-                        </a>
-                        <div class="collapse" id="customersDropdown">
-                            <ul class="nav flex-column ms-3 sub-menu">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="../hospital_view/add_customer.php">
-                                        <i class="fas fa-plus fa-sm"></i>
-                                        <span>Add Customer</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="../hospital_view/manage_customers.php">
-                                        <i class="fas fa-cog fa-sm"></i>
-                                        <span>Manage Customers</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
                
                     <li class="nav-item">
                         <a href="#" class="nav-link dropdown-toggle collapsed" data-bs-toggle="collapse" data-bs-target="#walletDropdown" aria-expanded="false">
@@ -128,6 +75,12 @@
                         </a>
                         <div class="collapse" id="walletDropdown">
                             <ul class="nav flex-column ms-3 sub-menu">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="../hospital_view/add_funds.php">
+                                        <i class="fas fa-plus fa-sm"></i>
+                                        <span>Add Funds</span>
+                                    </a>
+                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="../hospital_view/manage_transactions.php">
                                         <i class="fas fa-exchange-alt fa-sm"></i>
