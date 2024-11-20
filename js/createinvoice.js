@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Generate invoice number
     function generateInvoiceNumber() {
-        const facilityPrefix = 'MED'; // Replace with actual facility prefix from session
+        const facilityPrefix = 'MED'; // Fetch facility first three prefix with ID from session
         const year = new Date().getFullYear().toString().slice(-2);
         const randomNum = Math.floor(Math.random() * 1000000000).toString().padStart(9, '0');
         return `${facilityPrefix}/${year}/${randomNum}`;
@@ -23,14 +23,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Set initial dates
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
     const startDateInput = document.getElementById('startDate');
     const dueDateInput = document.getElementById('dueDate');
 
     if (startDateInput) {
         startDateInput.valueAsDate = today;
+        startDateInput.min = today.toISOString().split('T')[0];
+        
         startDateInput.addEventListener('change', function() {
             const startDate = new Date(this.value);
-            const dueDate = new Date(dueDateInput.value);
+            startDate.setHours(0, 0, 0, 0);
+            const dueDate = dueDateInput.valueAsDate;
             
             if (dueDate < startDate) {
                 dueDateInput.valueAsDate = startDate;
@@ -39,13 +43,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     if (dueDateInput) {
-        const dueDate = new Date();
+        const dueDate = new Date(today);
         dueDate.setDate(dueDate.getDate() + 30);
         dueDateInput.valueAsDate = dueDate;
+        dueDateInput.min = today.toISOString().split('T')[0];
 
         dueDateInput.addEventListener('change', function() {
-            const startDate = new Date(startDateInput.value);
+            const startDate = startDateInput.valueAsDate;
             const dueDate = new Date(this.value);
+            dueDate.setHours(0, 0, 0, 0);
             
             if (dueDate < startDate) {
                 Swal.fire({
@@ -69,12 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         fetch(`../../actions/get_customer_details.php?customer_id=${customerId}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
                 if (data.success && data.customer) {
                     const fields = {
@@ -282,6 +283,117 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Handle form submission
+    const createInvoiceBtn = document.getElementById('createInvoiceBtn');
+    if (createInvoiceBtn) {
+        createInvoiceBtn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            
+            try {
+                // Validate customer selection
+                const customerSelect = document.getElementById('customerSelect');
+                if (!customerSelect?.value) {
+                    throw new Error('Please select a patient');
+                }
+
+                // Validate dates
+                const startDate = new Date(startDateInput.value);
+                const dueDate = new Date(dueDateInput.value);
+                startDate.setHours(0, 0, 0, 0);
+                dueDate.setHours(0, 0, 0, 0);
+
+                if (startDate < today) {
+                    throw new Error('Start date cannot be in the past');
+                }
+
+                if (dueDate < startDate) {
+                    throw new Error('Due date cannot be before start date');
+                }
+
+                // Get all service rows
+                const rows = document.querySelectorAll('#inv-serviceTableBody tr');
+                if (!rows.length) {
+                    throw new Error('Please add at least one service');
+                }
+
+                // Format dates for MySQL (YYYY-MM-DD)
+                const formatDate = (date) => {
+                    return date.toISOString().split('T')[0];
+                };
+
+                // Prepare services data
+                const services = [];
+                for (const row of rows) {
+                    const productSelect = row.querySelector('.inv-product-select');
+                    if (!productSelect?.value) {
+                        throw new Error('Please select a service for all rows');
+                    }
+
+                    const product = JSON.parse(productSelect.value);
+                    services.push({
+                        product: product,
+                        quantity: parseFloat(row.querySelector('.inv-qty-input')?.value) || 0,
+                        price: parseFloat(row.querySelector('.inv-price-input')?.value) || 0,
+                        discount: parseFloat(row.querySelector('.inv-discount-input')?.value) || 0
+                    });
+                }
+
+                // Prepare invoice data
+                const invoiceData = {
+                    customer_id: customerSelect.value,
+                    invoice_number: invoiceNumberInput.value,
+                    start_date: formatDate(startDate),
+                    due_date: formatDate(dueDate),
+                    subtotal: parseFloat(document.getElementById('subtotal-display')?.textContent.replace(/[^0-9.-]+/g, '')),
+                    discount: parseFloat(document.getElementById('discount-display')?.textContent.replace(/[^0-9.-]+/g, '')),
+                    transaction_fee: parseFloat(document.getElementById('fee-display')?.textContent.replace(/[^0-9.-]+/g, '')),
+                    total: parseFloat(document.getElementById('total-display')?.textContent.replace(/[^0-9.-]+/g, '')),
+                    services: services
+                };
+
+                // Show loading state
+                await Swal.fire({
+                    title: 'Creating Invoice...',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                // Submit the invoice
+                const response = await fetch('../actions/invoice_action.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(invoiceData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    await Swal.fire({
+                        title: 'Success!',
+                        text: 'Invoice created successfully',
+                        icon: 'success'
+                    });
+                    window.location.href = `view_invoice.php?id=${data.invoice_id}`;
+                } else {
+                    throw new Error(data.message || 'Failed to create invoice');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                await Swal.fire({
+                    title: 'Error',
+                    text: error.message || 'Failed to create invoice',
+                    icon: 'error'
+                });
+            }
+        });
+    }
+
     // Make functions globally available
     window.updateRowCalculations = updateRowCalculations;
     window.updateProductDetails = updateProductDetails;
@@ -289,88 +401,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize calculations
     updateTotalCalculations();
-
-    // Handle form submission
-    const createInvoiceBtn = document.getElementById('createInvoiceBtn');
-    if (createInvoiceBtn) {
-        createInvoiceBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Validate customer selection
-            const customerSelect = document.getElementById('customerSelect');
-            if (!customerSelect?.value) {
-                Swal.fire('Error', 'Please select a patient', 'error');
-                return;
-            }
-
-            // Get all service rows
-            const rows = document.querySelectorAll('#inv-serviceTableBody tr');
-            if (!rows.length) {
-                Swal.fire('Error', 'Please add at least one service', 'error');
-                return;
-            }
-
-            // Prepare invoice data
-            const invoiceData = {
-                customer_id: customerSelect.value,
-                invoice_number: invoiceNumberInput.value,
-                start_date: startDateInput.value,
-                due_date: dueDateInput.value,
-                subtotal: parseFloat(document.getElementById('subtotal-display')?.textContent.replace(/[^0-9.-]+/g, '')),
-                discount: parseFloat(document.getElementById('discount-display')?.textContent.replace(/[^0-9.-]+/g, '')),
-                transaction_fee: parseFloat(document.getElementById('fee-display')?.textContent.replace(/[^0-9.-]+/g, '')),
-                total: parseFloat(document.getElementById('total-display')?.textContent.replace(/[^0-9.-]+/g, '')),
-                services: []
-            };
-
-            // Validate and add services
-            let isValid = true;
-            rows.forEach((row, index) => {
-                const productSelect = row.querySelector('.inv-product-select');
-                if (!productSelect?.value) {
-                    isValid = false;
-                    return;
-                }
-
-                invoiceData.services.push({
-                    product: JSON.parse(productSelect.value),
-                    quantity: parseFloat(row.querySelector('.inv-qty-input')?.value) || 0,
-                    price: parseFloat(row.querySelector('.inv-price-input')?.value) || 0,
-                    discount: parseFloat(row.querySelector('.inv-discount-input')?.value) || 0
-                });
-            });
-
-            if (!isValid) {
-                Swal.fire('Error', 'Please fill in all service details', 'error');
-                return;
-            }
-
-            // Submit the invoice
-            fetch('../../actions/create_invoice.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(invoiceData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: 'Invoice created successfully',
-                        icon: 'success'
-                    }).then(() => {
-                        window.location.href = `view_invoice.php?id=${data.invoice_id}`;
-                    });
-                } else {
-                    Swal.fire('Error', data.message || 'Failed to create invoice', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire('Error', 'Failed to create invoice', 'error');
-            });
-        });
-    }
 });

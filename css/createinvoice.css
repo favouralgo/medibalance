@@ -5,6 +5,19 @@
     padding: 2rem;
 }
 
+.inv-customer-select {
+    margin-bottom: 1.5rem; /* Space after dropdown */
+}
+
+.inv-customer-select select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 0.925rem;
+    background-color: #fff;
+}
+
 /* Header Section */
 .inv-header {
     display: flex;
@@ -47,13 +60,16 @@
 
 /* Form Inputs */
 .inv-form-input {
-    padding: 0.5rem 1rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
     border: 1px solid #e5e7eb;
     border-radius: 0.5rem;
-    font-size: 0.875rem;
+    font-size: 0.925rem;
     outline: none;
     transition: border-color 0.2s;
-    height: 40px;
+    height: 45px;
+    background-color: #f9fafb;
+    margin-bottom: 1rem;
 }
 
 .inv-form-input:focus {
@@ -78,12 +94,14 @@
     position: relative;
     display: flex;
     align-items: center;
+    min-width: 250px;
 }
 
 .inv-number-input input {
     padding-left: 4rem;
-    width: 200px;
+    width: 100%;
     height: 40px;
+    letter-spacing: 0.5px;
 }
 
 .inv-number-input label {
@@ -91,6 +109,7 @@
     left: 1rem;
     color: #6b7280;
     z-index: 1;
+    font-weight: 500;
 }
 
 /* Info Section */
@@ -105,33 +124,38 @@
 .inv-form-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    gap: 2rem; 
+    margin-top: 2rem; 
+    padding: 2rem; 
 }
 
 /* Full width inputs in grid */
 .inv-form-grid input:nth-child(3),
 .inv-form-grid input:nth-child(4) {
     grid-column: span 2;
+    margin-bottom: 1.5rem;
 }
 
 /* Cards */
 .inv-card {
     background: white;
-    border-radius: 0.5rem;
+    border-radius: 0.75rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
+    padding: 2.5rem;
 }
 
 .inv-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb;
 }
 
 .inv-card-header h2 {
-    font-size: 1.125rem;
-    font-weight: 500;
+    font-size: 1.25rem;
+    font-weight: 600;
     color: #1f2937;
     margin: 0;
 }
@@ -368,15 +392,22 @@
     .inv-number-input,
     .date-input-container,
     .inv-form-input[type="date"] {
-        width: 100%;
+        min-width: 100%;
     }
     
     .inv-number-input input {
         width: 100%;
+        font-size: 14px;
     }
 
     .inv-form-grid {
         grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .inv-form-grid input:nth-child(3),
+    .inv-form-grid input:nth-child(4) {
+        grid-column: span 1;
     }
 
     .inv-products-table {
