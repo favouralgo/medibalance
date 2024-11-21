@@ -30,7 +30,7 @@ $(document).ready(function() {
             success: function(response) {
                 if (response.success) {
                     Swal.fire("Success", response.message, "success").then(() => {
-                        window.location.href = '../view/hospital_view/dashboard.php';
+                        window.location.href = response.redirect;
                     });
                 } else {
                     Swal.fire("Error", response.message, "error");

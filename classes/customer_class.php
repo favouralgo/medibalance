@@ -201,67 +201,57 @@ class CustomerModel extends db_connection {
 
     }
 
-    public function login_customer(){
+    public function login_customer($customer_email, $customer_password) {
         $conn = $this->db_conn();
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-        $email = mysqli_real_escape_string($conn, $email);
-        $password = mysqli_real_escape_string($conn, $password);
+        $customer_email = mysqli_real_escape_string($conn, $customer_email);
+        
         $sql = "SELECT * FROM customer WHERE customer_email = ?";
         $stmt = $conn->prepare($sql);
-        if (!$stmt) {
-            throw new Exception("Prepare statement failed: " . $conn->error);
-        }
-        $stmt->bind_param("s", $email);
+        $stmt->bind_param("s", $customer_email);
         $stmt->execute();
         $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
-        if ($row) {
-            if (password_verify($password, $row['customer_password'])) {
-                return $row['customer_id'];
-                } else {
-                    return false;
-                }
-        } else {
-            return false;
+        $customer = $result->fetch_assoc();
+        
+        if ($customer && password_verify($customer_password, $customer['customer_password'])) {
+            return $customer;
         }
-
+        return false;
     }
 
-    public function update_password(){
+    public function update_password($customer_email, $new_password) {
         $conn = $this->db_conn();
-        $customer_id = $_POST['customer_id'];
-        $old_password = $_POST['old_password'];
-        $new_password = $_POST['new_password'];
-        $customer_id = mysqli_real_escape_string($conn, $customer_id);
-        $old_password = mysqli_real_escape_string($conn, $old_password);
-        $new_password = mysqli_real_escape_string($conn, $new_password);
-        $sql = "SELECT * FROM customer WHERE customer_id = ?";
+        
+        // Sanitize inputs
+        $customer_email = mysqli_real_escape_string($conn, $customer_email);
+        
+        // First verify the email exists
+        $sql = "SELECT customer_id FROM customer WHERE customer_email = ?";
         $stmt = $conn->prepare($sql);
         if (!$stmt) {
             throw new Exception("Prepare statement failed: " . $conn->error);
-            }
-        $stmt->bind_param("i", $customer_id);
+        }
+        
+        $stmt->bind_param("s", $customer_email);
         $stmt->execute();
         $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
-        if ($row) {
-            if (password_verify($old_password, $row['customer_password'])) {
-                $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-                $sql = "UPDATE customer SET customer_password = ? WHERE customer_id = ?";
-                $stmt = $conn->prepare($sql);
-                if (!$stmt) {
-                    throw new Exception("Prepare statement failed: " . $conn->error);
-                }
-                $stmt->bind_param("si", $hashed_password, $customer_id);
-                $stmt->execute();
-                return true;
-            } else {
-                return false;
-            }
-        } else {
+        $customer = $result->fetch_assoc();
+        
+        if (!$customer) {
             return false;
         }
+        
+        // Hash the new password
+        $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
+        
+        // Update the password
+        $sql = "UPDATE customer SET customer_password = ? WHERE customer_email = ?";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            throw new Exception("Prepare statement failed: " . $conn->error);
+        }
+        
+        $stmt->bind_param("ss", $hashed_password, $customer_email);
+        return $stmt->execute();
     }
 }
 ?>

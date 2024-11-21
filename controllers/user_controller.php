@@ -8,8 +8,30 @@ class UserController {
         $this->userModel = new UserModel();
     }
 
-    public function add_user($user_firstname, $user_lastname, $user_email, $user_facilityname, $user_country, $user_city, $user_address, $user_phonenumber, $user_password) {
-        return $this->userModel->add_user($user_firstname, $user_lastname, $user_email, $user_facilityname, $user_country, $user_city, $user_address, $user_phonenumber, $user_password);
+    // Parameters in exact database column order
+    public function add_user($user_firstname, $user_lastname, $user_password, $user_phonenumber, $user_country, $user_city, $user_facilityname, $user_email, $user_address) {
+        try {
+            // First check if email exists
+            if ($this->check_email_exists($user_email)) {
+                throw new Exception("Email already exists");
+            }
+
+            // Pass parameters in exact database column order
+            return $this->userModel->add_user(
+                $user_firstname,    
+                $user_lastname,     
+                $user_password,     
+                $user_phonenumber,  
+                $user_country,      
+                $user_city,         
+                $user_facilityname, 
+                $user_email,        
+                $user_address       
+            );
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            return false;
+        }
     }
 
     public function check_email_exists($user_email) {

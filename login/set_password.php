@@ -1,3 +1,11 @@
+<?php
+// At the top of set_password.php
+if (!isset($_GET['email'])) {
+    die('Email parameter is missing');
+}
+$customer_email = htmlspecialchars($_GET['email']);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +21,7 @@
             <h2 class="set-password-heading">Set New Password</h2>
             <div class="set-password-message" id="password-message"></div>
             <form id="setPasswordForm">
-                <input type="hidden" name="customer_email" id="customer_email" value="<?php echo htmlspecialchars($_GET['customer_email']); ?>">
+                <input type="hidden" name="customer_email" id="customer_email" value="<?php echo $customer_email; ?>">
                 <div class="set-password-field-container">
                     <input type="password" id="new_password" name="new_password" placeholder="Enter new password" required class="set-password-input">
                     <span toggle="#new_password" class="fa fa-fw fa-eye set-password-toggle"></span>

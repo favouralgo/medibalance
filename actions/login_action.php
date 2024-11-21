@@ -1,37 +1,54 @@
 <?php
 session_start();
 require_once("../controllers/user_controller.php");
+require_once("../controllers/customer_controller.php");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $user_email = $_POST['user_email'] ?? '';
-    $user_password = $_POST['user_password'] ?? '';
+    $email = $_POST['user_email'] ?? '';
+    $password = $_POST['user_password'] ?? '';
 
-    if (empty($user_email) || empty($user_password)) {
+    if (empty($email) || empty($password)) {
         echo json_encode(["success" => false, "message" => "Email and password are required"]);
         exit;
     }
 
-    $userController = new UserController();
-
     try {
-        // Check if the email exists
-        if (!$userController->check_email_exists($user_email)) {
-            echo json_encode(["success" => false, "message" => "Email does not exist"]);
-            exit;
-        }
+        $userController = new UserController();
+        $customerController = new CustomerController();
 
-        // Attempt to log in the user
-        $user = $userController->login_user_ctr($user_email, $user_password);
-
-        if ($user) {
-            $_SESSION['user_id'] = $user['user_id'];
-            $_SESSION['user_firstname'] = $user['user_firstname'];
-            $_SESSION['user_lastname'] = $user['user_lastname'];
-            $_SESSION['facility_name'] = $user['facility_name'];
-            echo json_encode(["success" => true, "message" => "Login successful"]);
-        } else {
-            echo json_encode(["success" => false, "message" => "Invalid email or password"]);
+        // Check if it's a hospital user
+        if ($userController->check_email_exists($email)) {
+            $user = $userController->login_user_ctr($email, $password);
+            if ($user) {
+                $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['user_firstname'] = $user['user_firstname'];
+                $_SESSION['user_lastname'] = $user['user_lastname'];
+                $_SESSION['facility_name'] = $user['facility_name'];
+                $_SESSION['user_type'] = 'user';
+                echo json_encode(["success" => true, "message" => "Login successful", "redirect" => "../view/hospital_view/dashboard.php"]);
+                exit;
+            }
         }
+        
+        // Check if it's a customer
+        if ($customerController->check_email_exists($email)) {
+            // Map to customer field names
+            $_POST['customer_email'] = $email;
+            $_POST['customer_password'] = $password;
+            
+            $customer = $customerController->login_customer_ctr($email, $password);
+            if ($customer) {
+                $_SESSION['customer_id'] = $customer['customer_id'];
+                $_SESSION['customer_firstname'] = $customer['customer_firstname'];
+                $_SESSION['customer_lastname'] = $customer['customer_lastname'];
+                $_SESSION['user_type'] = 'customer';
+                echo json_encode(["success" => true, "message" => "Login successful", "redirect" => "../view/patient_view/patient_dashboard.php"]);
+                exit;
+            }
+        }
+        
+        echo json_encode(["success" => false, "message" => "Invalid email or password"]);
+        
     } catch (Exception $e) {
         echo json_encode(["success" => false, "message" => $e->getMessage()]);
     }

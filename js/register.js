@@ -164,7 +164,7 @@ $(document).ready(function() {
     }
 
     function validateText(text) {
-        var re = /^(?!\d+$)[a-zA-Z\d]+$/;
+        var re = /^(?!\d+$)[a-zA-Z\d\s]+$/;
         return re.test(text);
     }
 

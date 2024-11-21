@@ -2,20 +2,20 @@
 require_once("../settings/db_class.php");
 
 class UserModel extends db_connection {
-    public function add_user($user_firstname, $user_lastname, $user_email, $user_facilityname, $user_country, $user_city, $user_address, $user_phonenumber, $user_password) {
+    public function add_user($user_firstname, $user_lastname, $user_password, $user_phonenumber, $user_country, $user_city, $user_facilityname, $user_email, $user_address) {
         // Get database connection
         $conn = $this->db_conn();
         
         // Sanitize the inputs
         $user_firstname = $conn->real_escape_string($user_firstname);
         $user_lastname = $conn->real_escape_string($user_lastname);
-        $user_email = $conn->real_escape_string($user_email);
-        $user_facilityname = $conn->real_escape_string($user_facilityname);
+        $user_password = $conn->real_escape_string($user_password);
+        $user_phonenumber = $conn->real_escape_string($user_phonenumber);
         $user_country = $conn->real_escape_string($user_country);
         $user_city = $conn->real_escape_string($user_city);
+        $user_facilityname = $conn->real_escape_string($user_facilityname);
+        $user_email = $conn->real_escape_string($user_email);
         $user_address = $conn->real_escape_string($user_address);
-        $user_phonenumber = $conn->real_escape_string($user_phonenumber);
-        $user_password = $conn->real_escape_string($user_password);
 
         // Hash the password using bcrypt
         $hashed_password = password_hash($user_password, PASSWORD_BCRYPT);
@@ -24,14 +24,37 @@ class UserModel extends db_connection {
         $conn->begin_transaction();
 
         try {
-            // Insert user
-            $sql = "INSERT INTO user (user_firstname, user_lastname, user_password, user_phonenumber, user_country, user_city, user_facilityname, user_email, user_address) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            // SQL fields in exact database column order
+            $sql = "INSERT INTO user (
+                user_firstname,   
+                user_lastname,    
+                user_password,    
+                user_phonenumber, 
+                user_country,     
+                user_city,        
+                user_facilityname,
+                user_email,       
+                user_address      
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            
             $stmt = $conn->prepare($sql);
             if (!$stmt) {
                 throw new Exception("Prepare statement failed: " . $conn->error);
             }
-            $stmt->bind_param("sssssssss", $user_firstname, $user_lastname, $hashed_password, $user_phonenumber, $user_country, $user_city, $user_facilityname, $user_email, $user_address);
+
+            // Bind parameters in exact database column order
+            $stmt->bind_param("sssssssss", 
+                $user_firstname,
+                $user_lastname,
+                $hashed_password,    // Hashed password in password column
+                $user_phonenumber,
+                $user_country,
+                $user_city,
+                $user_facilityname,
+                $user_email,
+                $user_address
+            );
+
             if (!$stmt->execute()) {
                 throw new Exception("Execute statement failed: " . $stmt->error);
             }
@@ -56,7 +79,7 @@ class UserModel extends db_connection {
         } catch (Exception $e) {
             // Rollback transaction if any operation fails
             $conn->rollback();
-            error_log($e->getMessage()); // Log the error message
+            error_log($e->getMessage());
             throw new Exception("User registration failed: " . $e->getMessage());
         }
     }

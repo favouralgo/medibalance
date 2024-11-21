@@ -25,6 +25,65 @@ $(document).ready(function() {
         }
     });
 
+    $('.customer-form').on('submit', function(e) {
+        e.preventDefault();
+        
+        // Disable submit button to prevent double submission
+        const submitBtn = $(this).find('button[type="submit"]');
+        submitBtn.prop('disabled', true);
+        
+        $.ajax({
+            url: '../../actions/customer_action.php',
+            type: 'POST',
+            data: $(this).serialize(),
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    // Show success message as a toast/notification
+                    Swal.fire({
+                        title: 'Success',
+                        text: response.message,
+                        icon: 'success',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                    
+                    // Clear the form
+                    $('.customer-form')[0].reset();
+                } else {
+                    // Show error message as a toast/notification
+                    Swal.fire({
+                        title: 'Error',
+                        text: response.message,
+                        icon: 'error',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'An error occurred while processing your request.',
+                    icon: 'error',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+                console.error('AJAX Error:', status, error);
+            },
+            complete: function() {
+                // Re-enable submit button
+                submitBtn.prop('disabled', false);
+            }
+        });
+    });
+    
     // Handle edit form submission
     $('#editCustomerForm').on('submit', function(e) {
         e.preventDefault();

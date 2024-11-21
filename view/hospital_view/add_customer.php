@@ -25,7 +25,7 @@
                         required
                     >
                 </div>
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <input 
                         type="password" 
                         id="customer_password" 
@@ -34,7 +34,7 @@
                         placeholder="Password" 
                         required
                     >
-                </div>
+                </div> -->
                 <div class="form-group">
                     <div class="input-with-icon">
                         <input 

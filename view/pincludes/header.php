@@ -51,13 +51,13 @@
                         <div class="collapse" id="invoicesDropdown">
                             <ul class="nav flex-column ms-3 sub-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="../hospital_view/manage_invoices.php">
+                                    <a class="nav-link" href="../patient_view/manage_invoices.php">
                                         <i class="fas fa-cog fa-sm"></i>
                                         <span>Manage Invoices</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="../hospital_view/download_csv.php">
+                                    <a class="nav-link" href="../patient_view/download_csv.php">
                                         <i class="fas fa-download fa-sm"></i>
                                         <span>Download CSV</span>
                                     </a>
@@ -76,19 +76,19 @@
                         <div class="collapse" id="walletDropdown">
                             <ul class="nav flex-column ms-3 sub-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="../hospital_view/add_funds.php">
+                                    <a class="nav-link" href="../patient_view/add_funds.php">
                                         <i class="fas fa-plus fa-sm"></i>
                                         <span>Add Funds</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="../hospital_view/manage_transactions.php">
+                                    <a class="nav-link" href="../patient_view/manage_transactions.php">
                                         <i class="fas fa-exchange-alt fa-sm"></i>
                                         <span>Transactions</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="../hospital_view/manage_wallet.php">
+                                    <a class="nav-link" href="../patient_view/manage_wallet.php">
                                             <i class="fas fa-cog fa-sm"></i>
                                         <span>Wallet Settings</span>
                                     </a>
@@ -106,13 +106,13 @@
                         <div class="collapse" id="settingsDropdown">
                             <ul class="nav flex-column ms-3 sub-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="../hospital_view/profile_settings.php">
+                                    <a class="nav-link" href="../patient_view/profile_settings.php">
                                         <i class="fas fa-user-cog fa-sm"></i>
                                         <span>Profile Settings</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="../hospital_view/change_password.php">
+                                    <a class="nav-link" href="../patient_view/change_password.php">
                                         <i class="fas fa-key fa-sm"></i>
                                         <span>Change Password</span>
                                     </a>
@@ -130,8 +130,8 @@
             <div class="dashboard-topbar">
                 <h5 class="page-title mb-0">
                     Welcome! 
-                    <?php if (isset($_SESSION['user_firstname']) && isset($_SESSION['user_lastname'])) {
-                        echo htmlspecialchars($_SESSION['user_firstname']) . ' ' . htmlspecialchars($_SESSION['user_lastname']);}
+                    <?php if (isset($_SESSION['customer_firstname']) && isset($_SESSION['customer_lastname'])) {
+                        echo htmlspecialchars($_SESSION['customer_firstname']) . ' ' . htmlspecialchars($_SESSION['customer_lastname']);}
                     ?>
                 </h5>
                 <!-- <h5 class="page-title mb-0">Dashboard</h5> -->
@@ -146,8 +146,8 @@
                             </div>
                             <span id="userName" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
                                 <?php
-                                    if (isset($_SESSION['user_firstname']) && isset($_SESSION['user_lastname'])) {
-                                    echo htmlspecialchars($_SESSION['user_firstname']) . ' ' . htmlspecialchars($_SESSION['user_lastname']);}
+                                    if (isset($_SESSION['customer_firstname']) && isset($_SESSION['customer_lastname'])) {
+                                    echo htmlspecialchars($_SESSION['customer_firstname']) . ' ' . htmlspecialchars($_SESSION['customer_lastname']);}
                                 ?>
                             </span>
 
