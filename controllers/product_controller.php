@@ -14,11 +14,19 @@ class ProductController {
 
     public function get_all_products_ctr($search = '', $entries = 10) {
         try {
-            // Ensure entries is valid
-            $entries = in_array((int)$entries, [10, 25, 50, 100]) ? (int)$entries : 10;
+            // Safety check for authentication
+            if (!isset($_SESSION['user_id']) && !isset($_SESSION['customer_id'])) {
+                return [
+                    'success' => false,
+                    'message' => 'Authentication required',
+                    'data' => []
+                ];
+            }
             
-            // Get products from model
-            $products = $this->productModel->get_all_products($search, $entries);
+            $entries = in_array((int)$entries, [10, 25, 50, 100]) ? (int)$entries : 10;
+            $user_id = $_SESSION['user_id'] ?? null;
+            
+            $products = $this->productModel->get_all_products($search, $entries, $user_id);
             
             return [
                 'success' => true,
@@ -36,8 +44,12 @@ class ProductController {
 
     public function get_all_products_for_dropdown_ctr() {
         try {
-            $products = $this->productModel->get_all_products_for_dropdown();
-            return $products;
+            // Safety check for authentication
+            if (!isset($_SESSION['user_id']) && !isset($_SESSION['customer_id'])) {
+                return [];
+            }
+            
+            return $this->productModel->get_all_products_for_dropdown();
         } catch (Exception $e) {
             error_log("Error in get_all_products_for_dropdown_ctr: " . $e->getMessage());
             return [];

@@ -2,6 +2,12 @@
 include '../includes/header.php';
 require_once('../../controllers/product_controller.php');
 
+// Basic authentication check
+if (!isset($_SESSION['user_id']) && !isset($_SESSION['customer_id'])) {
+    header('Location: ../../login/login.php');
+    exit;
+}
+
 // Initialize Product Controller
 $productController = new ProductController();
 

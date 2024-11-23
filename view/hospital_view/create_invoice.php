@@ -1,6 +1,8 @@
 <?php
-include '../includes/header.php'; 
-// session_start();
+include '../includes/header.php';
+
+
+// Check that session is started
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['facility_id'])) {
     header('Location: ../login.php');
     exit;

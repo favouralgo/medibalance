@@ -24,23 +24,44 @@ class ProductModel extends db_connection {
     }
 
     //--SELECT ALL PRODUCTS FUNCTION--//
-    public function get_all_products($search = '', $limit = 10) {
+    public function get_all_products($search = '', $limit = 10, $user_id = null) {
         try {
             $conn = $this->db_conn();
             
             // Base query
-            $sql = "SELECT * FROM product";
+            if (isset($_SESSION['user_id'])) {
+                // For facility users (medical staff)
+                $sql = "SELECT * FROM product WHERE user_id = ?";
+                $params = [$user_id];
+                $types = "i";
+            } else if (isset($_SESSION['customer_id'])) {
+                // For customers/patients - get products assigned to them
+                $sql = "SELECT DISTINCT p.* 
+                       FROM product p 
+                       INNER JOIN customer_products cp ON p.product_id = cp.product_id 
+                       WHERE cp.customer_id = ?";
+                $params = [$_SESSION['customer_id']];
+                $types = "i";
+            } else {
+                // If neither user nor customer, return empty array
+                return [];
+            }
             
             // Add search condition if search term exists
             if (!empty($search)) {
-                $sql .= " WHERE (product_name LIKE CONCAT('%', ?, '%') 
-                         OR product_description LIKE CONCAT('%', ?, '%'))";
+                $sql .= " AND (p.product_name LIKE CONCAT('%', ?, '%') 
+                         OR p.product_description LIKE CONCAT('%', ?, '%'))";
+                $params[] = $search;
+                $params[] = $search;
+                $types .= "ss";
             }
             
             // Add ordering and limit
             $sql .= " ORDER BY product_id DESC";
             if ($limit > 0) {
                 $sql .= " LIMIT ?";
+                $params[] = $limit;
+                $types .= "i";
             }
             
             $stmt = $conn->prepare($sql);
@@ -48,15 +69,8 @@ class ProductModel extends db_connection {
                 throw new Exception("Failed to prepare statement: " . $conn->error);
             }
             
-            // Bind parameters
-            if (!empty($search)) {
-                if ($limit > 0) {
-                    $stmt->bind_param("ssi", $search, $search, $limit);
-                } else {
-                    $stmt->bind_param("ss", $search, $search);
-                }
-            } elseif ($limit > 0) {
-                $stmt->bind_param("i", $limit);
+            if (!empty($params)) {
+                $stmt->bind_param($types, ...$params);
             }
             
             if (!$stmt->execute()) {
@@ -75,10 +89,6 @@ class ProductModel extends db_connection {
         } catch (Exception $e) {
             error_log("Database error in get_all_products: " . $e->getMessage());
             throw new Exception("Database error: " . $e->getMessage());
-        } finally {
-            if (isset($stmt)) {
-                $stmt->close();
-            }
         }
     }
 
@@ -86,10 +96,28 @@ class ProductModel extends db_connection {
         try {
             $conn = $this->db_conn();
             
-            // Simple query to get all active products
-            $sql = "SELECT product_id, product_name, product_price, product_description FROM product ORDER BY product_name ASC";
+            // Different queries based on session type
+            if (isset($_SESSION['user_id'])) {
+                // For facility users (medical staff)
+                $sql = "SELECT product_id, product_name, product_price, product_description 
+                       FROM product 
+                       WHERE user_id = ? 
+                       ORDER BY product_name ASC";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("i", $_SESSION['user_id']);
+            } else if (isset($_SESSION['customer_id'])) {
+                // For customers/patients
+                $sql = "SELECT DISTINCT p.product_id, p.product_name, p.product_price, p.product_description 
+                       FROM product p 
+                       INNER JOIN customer_products cp ON p.product_id = cp.product_id 
+                       WHERE cp.customer_id = ? 
+                       ORDER BY p.product_name ASC";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("i", $_SESSION['customer_id']);
+            } else {
+                return [];
+            }
             
-            $stmt = $conn->prepare($sql);
             if (!$stmt) {
                 throw new Exception("Failed to prepare statement: " . $conn->error);
             }

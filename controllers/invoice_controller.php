@@ -91,5 +91,53 @@ class InvoiceController {
             ];
         }
     }
+
+    public function get_user_statistics_ctr($user_id) {
+        try {
+            return $this->invoiceModel->get_user_statistics($user_id);
+        } catch (Exception $e) {
+            error_log("Error in get_user_statistics_ctr: " . $e->getMessage());
+            return [
+                'total_invoices' => 0,
+                'total_revenue' => 0,
+                'pending_bills' => 0,
+                'due_amount' => 0,
+                'total_products' => 0,
+                'total_customers' => 0,
+                'paid_bills' => 0
+            ];
+        }
+    }
+    
+    public function get_recent_invoices_ctr($user_id, $limit = 4) {
+        try {
+            return $this->invoiceModel->get_recent_invoices($user_id, $limit);
+        } catch (Exception $e) {
+            error_log("Error in get_recent_invoices_ctr: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function get_recent_activities_ctr($user_id) {
+        try {
+            // Get 3 of each type (total 6 activities)
+            return $this->invoiceModel->get_recent_activities($user_id, 3);
+        } catch (Exception $e) {
+            error_log("Error in get_recent_activities_ctr: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    public function get_monthly_statistics_ctr($user_id) {
+        try {
+            return $this->invoiceModel->get_monthly_statistics($user_id);
+        } catch (Exception $e) {
+            error_log("Error in get_monthly_statistics_ctr: " . $e->getMessage());
+            return [
+                'sales_percentage' => 0,
+                'paid_percentage' => 0
+            ];
+        }
+    }
 }
 ?>

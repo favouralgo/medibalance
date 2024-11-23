@@ -289,5 +289,203 @@ class InvoiceModel extends db_connection {
             throw new Exception("Database error: " . $e->getMessage());
         }
     }
+
+    public function get_user_statistics($user_id) {
+        try {
+            $conn = $this->db_conn();
+            
+            $sql = "SELECT 
+                    COUNT(*) as total_invoices,
+                    SUM(invoice_total) as total_revenue,
+                    (SELECT COUNT(*) FROM invoice 
+                     WHERE user_id = ? AND status_id = 2) as pending_bills,
+                    (SELECT SUM(invoice_total) FROM invoice 
+                     WHERE user_id = ? AND status_id = 2) as due_amount,
+                    (SELECT COUNT(*) FROM product 
+                     WHERE user_id = ?) as total_products,
+                    (SELECT COUNT(DISTINCT customer_id) FROM invoice 
+                     WHERE user_id = ?) as total_customers,
+                    (SELECT COUNT(*) FROM invoice 
+                     WHERE user_id = ? AND status_id = 1) as paid_bills
+                    FROM invoice 
+                    WHERE user_id = ?";
+            
+            $stmt = $conn->prepare($sql);
+            if (!$stmt) {
+                throw new Exception("Failed to prepare statement: " . $conn->error);
+            }
+            
+            $stmt->bind_param("iiiiii", 
+                $user_id, $user_id, $user_id, $user_id, $user_id, $user_id
+            );
+            
+            if (!$stmt->execute()) {
+                throw new Exception("Failed to execute query: " . $stmt->error);
+            }
+            
+            $result = $stmt->get_result();
+            return $result->fetch_assoc();
+            
+        } catch (Exception $e) {
+            error_log("Failed to get user statistics: " . $e->getMessage());
+            throw new Exception("Failed to get statistics");
+        }
+    }
+    
+    public function get_recent_invoices($user_id, $limit = 4) {
+        try {
+            $conn = $this->db_conn();
+            
+            $sql = "SELECT i.*, 
+                           CONCAT(c.customer_firstname, ' ', c.customer_lastname) as customer_name,
+                           s.status_name
+                    FROM invoice i
+                    LEFT JOIN customer c ON i.customer_id = c.customer_id
+                    LEFT JOIN status s ON i.status_id = s.status_id
+                    WHERE i.user_id = ?
+                    ORDER BY i.created_at DESC
+                    LIMIT ?";
+            
+            $stmt = $conn->prepare($sql);
+            if (!$stmt) {
+                throw new Exception("Failed to prepare statement: " . $conn->error);
+            }
+            
+            $stmt->bind_param("ii", $user_id, $limit);
+            
+            if (!$stmt->execute()) {
+                throw new Exception("Failed to execute query: " . $stmt->error);
+            }
+            
+            $result = $stmt->get_result();
+            $invoices = [];
+            
+            while ($row = $result->fetch_assoc()) {
+                $invoices[] = $row;
+            }
+            
+            return $invoices;
+            
+        } catch (Exception $e) {
+            error_log("Failed to get recent invoices: " . $e->getMessage());
+            throw new Exception("Failed to fetch recent invoices");
+        }
+    }
+
+    public function get_recent_activities($user_id, $limit_per_type = 3) {
+        try {
+            $conn = $this->db_conn();
+            
+            // Get latest 3 invoice creations and 3 payments separately using UNION ALL
+            $sql = "(SELECT 
+                    'invoice_created' as activity_type,
+                    i.invoice_number,
+                    CONCAT(c.customer_firstname, ' ', c.customer_lastname) as customer_name,
+                    i.created_at as activity_time,
+                    i.invoice_total as amount
+                    FROM invoice i
+                    JOIN customer c ON i.customer_id = c.customer_id
+                    WHERE i.user_id = ?
+                    ORDER BY i.created_at DESC
+                    LIMIT ?)
+                    
+                    UNION ALL
+                    
+                    (SELECT 
+                    'payment_received' as activity_type,
+                    i.invoice_number,
+                    CONCAT(c.customer_firstname, ' ', c.customer_lastname) as customer_name,
+                    i.updated_at as activity_time,
+                    i.invoice_total as amount
+                    FROM invoice i
+                    JOIN customer c ON i.customer_id = c.customer_id
+                    WHERE i.user_id = ? AND i.status_id = 1
+                    ORDER BY i.updated_at DESC
+                    LIMIT ?)
+                    
+                    ORDER BY activity_time DESC";
+            
+            $stmt = $conn->prepare($sql);
+            // Bind both user_id and limit twice (once for each subquery)
+            $stmt->bind_param("iiii", $user_id, $limit_per_type, $user_id, $limit_per_type);
+            $stmt->execute();
+            
+            $result = $stmt->get_result();
+            $activities = [];
+            
+            while ($row = $result->fetch_assoc()) {
+                $activities[] = $row;
+            }
+            
+            return $activities;
+            
+        } catch (Exception $e) {
+            error_log("Failed to get recent activities: " . $e->getMessage());
+            throw new Exception("Failed to fetch recent activities");
+        }
+    }
+    
+    public function get_monthly_statistics($user_id) {
+        try {
+            $conn = $this->db_conn();
+            
+            // Get current month's statistics
+            $sql = "SELECT 
+                    (SELECT COUNT(*) 
+                     FROM invoice 
+                     WHERE user_id = ? 
+                     AND MONTH(created_at) = MONTH(CURRENT_DATE())
+                     AND YEAR(created_at) = YEAR(CURRENT_DATE())) as total_invoices,
+                    
+                    (SELECT COUNT(*) 
+                     FROM invoice 
+                     WHERE user_id = ? 
+                     AND status_id = 1
+                     AND MONTH(created_at) = MONTH(CURRENT_DATE())
+                     AND YEAR(created_at) = YEAR(CURRENT_DATE())) as paid_invoices,
+                    
+                    (SELECT SUM(invoice_total) 
+                     FROM invoice 
+                     WHERE user_id = ?
+                     AND MONTH(created_at) = MONTH(CURRENT_DATE())
+                     AND YEAR(created_at) = YEAR(CURRENT_DATE())) as total_sales";
+            
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("iii", $user_id, $user_id, $user_id);
+            $stmt->execute();
+            
+            $result = $stmt->get_result()->fetch_assoc();
+            
+            // Calculate percentages
+            $total_invoices = $result['total_invoices'] ?? 0;
+            $paid_invoices = $result['paid_invoices'] ?? 0;
+            $total_sales = $result['total_sales'] ?? 0;
+            
+            // Previous month's total sales for comparison
+            $sql = "SELECT SUM(invoice_total) as prev_month_sales
+                    FROM invoice 
+                    WHERE user_id = ?
+                    AND MONTH(created_at) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)
+                    AND YEAR(created_at) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH)";
+            
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("i", $user_id);
+            $stmt->execute();
+            
+            $prev_month = $stmt->get_result()->fetch_assoc();
+            $prev_month_sales = $prev_month['prev_month_sales'] ?? 0;
+            
+            return [
+                'sales_percentage' => $prev_month_sales > 0 ? 
+                    min(100, round(($total_sales / $prev_month_sales) * 100)) : 0,
+                'paid_percentage' => $total_invoices > 0 ? 
+                    round(($paid_invoices / $total_invoices) * 100) : 0
+            ];
+            
+        } catch (Exception $e) {
+            error_log("Failed to get monthly statistics: " . $e->getMessage());
+            throw new Exception("Failed to fetch monthly statistics");
+        }
+    }
 }
 ?>
