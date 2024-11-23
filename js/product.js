@@ -3,24 +3,27 @@ $(document).ready(function() {
     $('[data-toggle="tooltip"]').tooltip();
     $('[data-toggle="popover"]').popover();
 
-    // Handle entries per page change
-    $('.entries-select').on('change', function() {
-        updateEntries($(this).val());
+    // Handle entries select change
+    $('#entriesSelect').on('change', function() {
+        const searchValue = $('#searchInput').val();
+        const entriesValue = $(this).val();
+        window.location.href = `?search=${encodeURIComponent(searchValue)}&entries=${entriesValue}`;
     });
 
-    // Handle search input with debounce
-    let searchTimeout;
-    $('.search-input').on('keyup', function() {
-        clearTimeout(searchTimeout);
-        const query = $(this).val();
-        searchTimeout = setTimeout(() => searchProducts(query), 500);
-    });
-
-    // Handle pagination button click
-    $('.pagination-button').on('click', function() {
-        if (!$(this).prop('disabled')) {
-            changePage($(this).data('page'));
+    // Handle search input
+    $('#searchInput').on('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const searchValue = $(this).val();
+            const entriesValue = $('#entriesSelect').val();
+            window.location.href = `?search=${encodeURIComponent(searchValue)}&entries=${entriesValue}`;
         }
+    });
+
+    // Handle search button click
+    $('#searchButton').on('click', function() {
+        const searchValue = $('#searchInput').val();
+        const entriesValue = $('#entriesSelect').val();
+        window.location.href = `?search=${encodeURIComponent(searchValue)}&entries=${entriesValue}`;
     });
 
     // Handle edit product form submission
@@ -250,25 +253,57 @@ function openDeleteModal(productId) {
     });
 }
 
-// Function to handle search
-function searchProducts(query) {
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set('search', query);
-    urlParams.set('page', '1'); // Reset to first page on new search
-    window.location.href = window.location.pathname + '?' + urlParams.toString();
+function viewProductDetails(productId) {
+    $.ajax({
+        url: '../../actions/get_product_action.php',
+        type: 'GET',
+        data: { product_id: productId },
+        dataType: 'json',
+        success: function(response) {
+            if (response.success && response.product) {
+                const product = response.product;
+                const detailsHtml = `
+                    <div class="product-details">
+                        <div class="mb-3">
+                            <h6 class="fw-bold">Service Name</h6>
+                            <p>${escapeHtml(product.product_name)}</p>
+                        </div>
+                        <div class="mb-3">
+                            <h6 class="fw-bold">Description</h6>
+                            <p>${escapeHtml(product.product_description)}</p>
+                        </div>
+                        <div class="mb-3">
+                            <h6 class="fw-bold">Price</h6>
+                            <p>$${parseFloat(product.product_price).toFixed(2)}</p>
+                        </div>
+                    </div>
+                `;
+                $('#productDetails').html(detailsHtml);
+                const modal = new bootstrap.Modal(document.getElementById('viewProductModal'));
+                modal.show();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Unable to load service details'
+                });
+            }
+        },
+        error: function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to load service details. Please try again.'
+            });
+        }
+    });
 }
 
-// Function to update entries per page
-function updateEntries(entries) {
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set('entries', entries);
-    urlParams.set('page', '1'); // Reset to first page when changing entries
-    window.location.href = window.location.pathname + '?' + urlParams.toString();
-}
-
-// Function to handle pagination
-function changePage(page) {
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set('page', page);
-    window.location.href = window.location.pathname + '?' + urlParams.toString();
+function escapeHtml(unsafe) {
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }

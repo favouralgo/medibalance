@@ -1,5 +1,4 @@
 <?php session_start(); ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -176,12 +175,23 @@
             <!-- Top Bar -->
             <div class="dashboard-topbar">
                 <h5 class="page-title mb-0">
-                    Welcome! 
-                    <?php if (isset($_SESSION['user_firstname']) && isset($_SESSION['user_lastname'])) {
-                        echo htmlspecialchars($_SESSION['user_firstname']) . ' ' . htmlspecialchars($_SESSION['user_lastname']);}
-                    ?>
+                        <?php 
+                        // Get current page name
+                        $currentPage = basename($_SERVER['PHP_SELF']);
+
+                        // Display Welcome message only on dashboard.php
+                        if ($currentPage === 'dashboard.php') {
+                            echo 'Welcome! ';
+                            if (isset($_SESSION['user_firstname']) && isset($_SESSION['user_lastname'])) {
+                                echo htmlspecialchars($_SESSION['user_firstname']) . ' ' . htmlspecialchars($_SESSION['user_lastname']);
+                            }
+                        } else {
+                            // For other pages, display the page title (this will be updated by main.js)
+                            echo '<span class="page-title"></span>';
+                        }
+                        ?>
                 </h5>
-                <!-- <h5 class="page-title mb-0">Dashboard</h5> -->
+                
                     <div class="d-flex align-items-center gap-3">
                         <div class="notification-icon">
                             <i class="fas fa-bell"></i>
@@ -198,7 +208,7 @@
                                 ?>
                             </span>
 
-                            <ul class="dropdown-menu dropdown-menu-end">
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                 <li><a class="dropdown-item" href="../hospital_view/profile_settings.php"><i class="fas fa-user-cog me-2"></i>Profile</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="../../login/logout.php"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>

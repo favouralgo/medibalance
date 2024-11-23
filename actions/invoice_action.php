@@ -1,5 +1,10 @@
 <?php
 session_start();
+
+// error reporting
+ini_set('display_errors', 1);
+ini_set('error_reporting', E_ALL);
+
 header('Content-Type: application/json');
 require_once(__DIR__. '/../controllers/invoice_controller.php');
 
@@ -22,21 +27,12 @@ try {
         }
     }
 
-    $facility_id = $_SESSION['facility_id'] ?? null;
-    $user_id = $_SESSION['user_id'] ?? null;
+    $facility_id = $data['facility_id'] ?? null;
+    $user_id = $data['user_id'] ?? null;
     
     if (empty($facility_id) || empty($user_id)) {
         throw new Exception('Session data missing (facility_id or user_id)');
     }
-
-    $products = array_map(function($service) {
-        return [
-            'product' => $service['product'],
-            'quantity' => $service['quantity'],
-            'price' => $service['price'],
-            'discount' => $service['discount']
-        ];
-    }, $data['services']);
 
     $invoiceController = new InvoiceController();
     $result = $invoiceController->create_invoice_ctr(
@@ -46,7 +42,7 @@ try {
         $data['invoice_number'],
         $data['start_date'],
         $data['due_date'],
-        $products
+        $data['services']
     );
 
     if ($result['success']) {
@@ -61,6 +57,8 @@ try {
     }
 
 } catch (Exception $e) {
+    error_log("Invoice creation error: " . $e->getMessage());
+    http_response_code(400);
     http_response_code(400);
     echo json_encode([
         'success' => false,

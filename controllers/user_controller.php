@@ -2,10 +2,16 @@
 require_once("../classes/user_class.php");
 
 class UserController {
-    private $userModel;
+    protected $userModel;
 
     public function __construct() {
         $this->userModel = new UserModel();
+    }
+
+    // Fetch facility_id for this user
+    public function get_facility_by_user_id($user_id) {
+        $sql = "SELECT facility_id FROM facility WHERE user_id = $user_id";
+        return $this->userModel->db_fetch_one($sql);
     }
 
     // Parameters in exact database column order

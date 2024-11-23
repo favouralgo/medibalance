@@ -1,4 +1,3 @@
-// main.js
 document.addEventListener('DOMContentLoaded', function() {
     // Get DOM elements
     const sidebarToggler = document.querySelector('.sidebar-toggler');
@@ -40,18 +39,31 @@ document.addEventListener('DOMContentLoaded', function() {
         e.stopPropagation();
     });
 
-    // Store and restore dropdown states
-    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+    // Initialize all Bootstrap dropdowns
+    const allDropdownToggles = document.querySelectorAll('[data-bs-toggle="dropdown"]');
+    allDropdownToggles.forEach(toggle => {
+        new bootstrap.Dropdown(toggle);
+    });
+
+    // Determine which dashboard we're in
+    const currentPath = window.location.pathname;
+    const isPatientDashboard = currentPath.includes('/patient_view/');
+    const isHospitalDashboard = currentPath.includes('/hospital_view/');
+    const currentPage = currentPath.split('/').pop() || 'dashboard.php';
+
+    // Handle sidebar menu dropdowns
+    const sidebarDropdownToggles = document.querySelectorAll('.nav-link.dropdown-toggle');
     let storedStates = JSON.parse(localStorage.getItem('dropdownStates') || '{}');
 
-    dropdownToggles.forEach(toggle => {
-        const targetId = toggle.getAttribute('data-bs-target').replace('#', '');
+    sidebarDropdownToggles.forEach(toggle => {
+        const targetId = toggle.getAttribute('data-bs-target')?.replace('#', '');
+        if (!targetId) return;
         
         // Apply stored state
         if (storedStates[targetId]) {
             toggle.classList.remove('collapsed');
             toggle.setAttribute('aria-expanded', 'true');
-            document.getElementById(targetId).classList.add('show');
+            document.getElementById(targetId)?.classList.add('show');
         }
 
         // Update stored states when dropdown changes
@@ -62,28 +74,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 localStorage.setItem('dropdownStates', JSON.stringify(storedStates));
             }, 0);
         });
+
+        // Handle arrow rotation
+        const arrow = toggle.querySelector('.fa-angle-down');
+        if (arrow) {
+            // Set initial rotation based on stored state
+            if (storedStates[targetId]) {
+                arrow.style.transform = 'rotate(180deg)';
+            }
+
+            toggle.addEventListener('click', function() {
+                const isExpanded = this.getAttribute('aria-expanded') === 'true';
+                arrow.style.transform = isExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
+            });
+        }
     });
 
-    // Handle arrow rotation
-    dropdownToggles.forEach(toggle => {
-        toggle.addEventListener('click', function() {
-            const arrow = this.querySelector('.fa-angle-down');
-            if (arrow) {
-                if (this.getAttribute('aria-expanded') === 'true') {
-                    arrow.style.transform = 'rotate(180deg)';
-                } else {
-                    arrow.style.transform = 'rotate(0deg)';
-                }
-            }
+    // Handle profile dropdown
+    const userDropdown = document.querySelector('#userDropdown');
+    if (userDropdown) {
+        new bootstrap.Dropdown(userDropdown, {
+            boundary: 'window'
         });
-    });
+    }
 
     // Update page title
     const pageTitle = document.querySelector('.page-title');
     if (pageTitle) {
-        const currentPage = window.location.pathname.split('/').pop() || 'dashboard.php';
-        const titles = {
-            'dashboard.php': 'Dashboard',
+        // Define titles for both dashboards
+        const hospitalTitles = {
+            'dashboard.php': 'Welcome!',
             'create_invoice.php': 'Create Invoice',
             'manage_invoices.php': 'Manage Invoices',
             'download_csv.php': 'Download CSV',
@@ -94,8 +114,76 @@ document.addEventListener('DOMContentLoaded', function() {
             'add_user.php': 'Add User',
             'manage_users.php': 'Manage Users',
             'profile_settings.php': 'Profile Settings',
-            'change_password.php': 'Change Password'
+            'change_password.php': 'Change Password',
+            'product.php': 'Products',
+            'view_invoice.php': 'View Invoice',
+            'manage_transactions.php': 'Manage Transactions',
+            'manage_wallet.php': 'Wallet Settings',
+            'customers.php': 'Customers'
         };
-        pageTitle.textContent = titles[currentPage] || 'Dashboard';
+
+        const patientTitles = {
+            'patient_dashboard.php': 'Welcome!',
+            'manage_invoice.php': 'My Invoices',
+            'manage_product.php': 'My Services',
+            'add_funds.php': 'Add Funds',
+            'manage_transactions.php': 'Transaction History',
+            'manage_wallet.php': 'My Wallet'
+        };
+
+        // Set title based on dashboard type and current page
+        const isDashboardPage = currentPage === 'dashboard.php' || currentPage === 'patient_dashboard.php';
+        if (!isDashboardPage || !pageTitle.innerHTML.includes('Welcome!')) {
+            if (isHospitalDashboard) {
+                pageTitle.textContent = hospitalTitles[currentPage] || 'Dashboard';
+            } else if (isPatientDashboard) {
+                pageTitle.textContent = patientTitles[currentPage] || 'Dashboard';
+            }
+        }
     }
+
+    // Handle active states for navigation
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (!href) return;
+
+        const linkPath = href.split('/').pop();
+        if (linkPath === currentPage) {
+            link.classList.add('active');
+            
+            // If this link is in a dropdown, expand the dropdown
+            const dropdownContent = link.closest('.collapse');
+            if (dropdownContent) {
+                dropdownContent.classList.add('show');
+                const dropdownToggle = document.querySelector(`[data-bs-target="#${dropdownContent.id}"]`);
+                if (dropdownToggle) {
+                    dropdownToggle.classList.remove('collapsed');
+                    dropdownToggle.setAttribute('aria-expanded', 'true');
+                    
+                    // Rotate the arrow if present
+                    const arrow = dropdownToggle.querySelector('.fa-angle-down');
+                    if (arrow) {
+                        arrow.style.transform = 'rotate(180deg)';
+                    }
+                }
+            }
+        }
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(event) {
+        const isDropdownButton = event.target.matches('[data-bs-toggle="dropdown"]');
+        const isInsideDropdown = event.target.closest('.dropdown-menu');
+        
+        if (!isDropdownButton && !isInsideDropdown) {
+            const dropdowns = document.querySelectorAll('.dropdown-menu.show');
+            dropdowns.forEach(dropdown => {
+                const toggle = document.querySelector(`[data-bs-toggle="dropdown"][aria-expanded="true"]`);
+                if (toggle) {
+                    new bootstrap.Dropdown(toggle).hide();
+                }
+            });
+        }
+    });
 });

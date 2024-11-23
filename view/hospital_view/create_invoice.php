@@ -1,5 +1,12 @@
-<?php 
+<?php
 include '../includes/header.php'; 
+// session_start();
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['facility_id'])) {
+    header('Location: ../login.php');
+    exit;
+}
+
+
 require_once('../../controllers/customer_controller.php');
 require_once('../../controllers/product_controller.php');
 
@@ -9,8 +16,15 @@ $customers = $customerController->get_all_customers_ctr();
 
 // Fetch all products
 $productController = new ProductController();
-$products = $productController->get_all_products_ctr();
+$products = $productController->get_all_products_for_dropdown_ctr();
 ?>
+
+<script>
+window.sessionData = {
+    facility_id: <?php echo json_encode($_SESSION['facility_id']); ?>,
+    user_id: <?php echo json_encode($_SESSION['user_id']); ?>
+};
+</script>
 
 <div class="inv-container">
     <div class="inv-header">
@@ -81,11 +95,20 @@ $products = $productController->get_all_products_ctr();
                     <td class="inv-product-cell">
                         <select class="inv-form-input inv-product-select" onchange="updateProductDetails(this)">
                             <option value="">Select a service</option>
-                            <?php foreach ($products as $product): ?>
-                                <option value="<?php echo htmlspecialchars(json_encode($product)); ?>">
-                                    <?php echo htmlspecialchars($product['product_name']); ?>
-                                </option>
-                            <?php endforeach; ?>
+                            <?php if (is_array($products)): ?>
+                                <?php foreach ($products as $product): ?>
+                                    <?php if (isset($product['product_id'], $product['product_name'], $product['product_price'])): ?>
+                                        <option value="<?php echo htmlspecialchars(json_encode([
+                                            'product_id' => $product['product_id'],
+                                            'product_name' => $product['product_name'],
+                                            'product_price' => $product['product_price'],
+                                            'product_description' => $product['product_description']
+                                        ]), ENT_QUOTES, 'UTF-8'); ?>">
+                                            <?php echo htmlspecialchars($product['product_name']); ?>
+                                        </option>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </select>
                     </td>
                     <td>

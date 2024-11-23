@@ -1,4 +1,4 @@
-<?php include '../includes/header.php'; ?>
+<?php include '../pincludes/header.php'; ?>
 
 <div class="adf-container">
     <form class="adf-form" method="POST" action="">
@@ -66,4 +66,4 @@
     </form>
 </div>
 
-<?php include '../includes/footer.php'; ?>
+<?php include '../pincludes/footer.php'; ?>

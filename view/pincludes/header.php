@@ -36,7 +36,7 @@
             <div class="d-flex flex-column h-100">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a href="dashboard.php" class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : ''; ?>">
+                        <a href="patient_dashboard.php" class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'patient_dashboard.php') ? 'active' : ''; ?>">
                             <i class="fas fa-chart-line"></i>
                             <span>Dashboard</span>
                         </a>
@@ -51,15 +51,27 @@
                         <div class="collapse" id="invoicesDropdown">
                             <ul class="nav flex-column ms-3 sub-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="../patient_view/manage_invoices.php">
+                                    <a class="nav-link" href="../patient_view/manage_invoice.php">
                                         <i class="fas fa-cog fa-sm"></i>
                                         <span>Manage Invoices</span>
                                     </a>
                                 </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="#" class="nav-link dropdown-toggle collapsed" data-bs-toggle="collapse" data-bs-target="#productsDropdown" aria-expanded="false">
+                            <i class="fas fa-box"></i>
+                            <span>Products</span>
+                            <i class="fas fa-angle-down"></i>
+                        </a>
+                        <div class="collapse" id="productsDropdown">
+                            <ul class="nav flex-column ms-3 sub-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="../patient_view/download_csv.php">
-                                        <i class="fas fa-download fa-sm"></i>
-                                        <span>Download CSV</span>
+                                    <a class="nav-link" href="../patient_view/manage_product.php">
+                                        <i class="fas fa-cog fa-sm"></i>
+                                        <span>See Products</span>
                                     </a>
                                 </li>
                             </ul>
@@ -129,11 +141,23 @@
             <!-- Top Bar -->
             <div class="dashboard-topbar">
                 <h5 class="page-title mb-0">
-                    Welcome! 
-                    <?php if (isset($_SESSION['customer_firstname']) && isset($_SESSION['customer_lastname'])) {
-                        echo htmlspecialchars($_SESSION['customer_firstname']) . ' ' . htmlspecialchars($_SESSION['customer_lastname']);}
-                    ?>
+                        <?php 
+                        // Get current page name
+                        $currentPage = basename($_SERVER['PHP_SELF']);
+
+                        // Display Welcome message only on dashboard.php
+                        if ($currentPage === 'patient_dashboard.php') {
+                            echo 'Welcome! ';
+                            if (isset($_SESSION['customer_firstname']) && isset($_SESSION['customer_lastname'])) {
+                                echo htmlspecialchars($_SESSION['customer_firstname']) . ' ' . htmlspecialchars($_SESSION['customer_lastname']);
+                            }
+                        } else {
+                            // For other pages, display the page title (this will be updated by main.js)
+                            echo '<span class="page-title"></span>';
+                        }
+                        ?>
                 </h5>
+
                 <!-- <h5 class="page-title mb-0">Dashboard</h5> -->
                     <div class="d-flex align-items-center gap-3">
                         <div class="notification-icon">
@@ -151,7 +175,7 @@
                                 ?>
                             </span>
 
-                            <ul class="dropdown-menu dropdown-menu-end">
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                 <li><a class="dropdown-item" href="../hospital_view/profile_settings.php"><i class="fas fa-user-cog me-2"></i>Profile</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="../../login/logout.php"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>

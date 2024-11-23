@@ -1,4 +1,4 @@
-<?php include '../includes/header.php'; ?>
+<?php include '../pincludes/header.php'; ?>
 
 <div class="trx-container">
     <form class="trx-form" method="POST" action="">
@@ -46,4 +46,4 @@
     </form>
 </div>
 
-<?php include '../includes/footer.php'; ?>
+<?php include '../pincludes/footer.php'; ?>

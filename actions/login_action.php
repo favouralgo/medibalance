@@ -20,10 +20,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($userController->check_email_exists($email)) {
             $user = $userController->login_user_ctr($email, $password);
             if ($user) {
+                // Fetch facility_id for this user
+                $facility = $userController->get_facility_by_user_id($user['user_id']);
                 $_SESSION['user_id'] = $user['user_id'];
                 $_SESSION['user_firstname'] = $user['user_firstname'];
                 $_SESSION['user_lastname'] = $user['user_lastname'];
                 $_SESSION['facility_name'] = $user['facility_name'];
+                $_SESSION['facility_id'] = $facility['facility_id'] ?? null;
                 $_SESSION['user_type'] = 'user';
                 echo json_encode(["success" => true, "message" => "Login successful", "redirect" => "../view/hospital_view/dashboard.php"]);
                 exit;

@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (select.value) {
             try {
                 const productData = JSON.parse(select.value);
-                priceInput.value = productData.product_price || '';
+                priceInput.value = parseFloat(productData.product_price).toFixed(2);
                 updateRowCalculations(row);
             } catch (error) {
                 console.error('Error parsing product data:', error);
@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (createInvoiceBtn) {
         createInvoiceBtn.addEventListener('click', async function(e) {
             e.preventDefault();
-            
+
             try {
                 // Validate customer selection
                 const customerSelect = document.getElementById('customerSelect');
@@ -316,11 +316,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     throw new Error('Please add at least one service');
                 }
 
-                // Format dates for MySQL (YYYY-MM-DD)
-                const formatDate = (date) => {
-                    return date.toISOString().split('T')[0];
-                };
-
                 // Prepare services data
                 const services = [];
                 for (const row of rows) {
@@ -338,31 +333,29 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                 }
 
+                // Get display values safely
+                const getDisplayValue = (id) => {
+                    const element = document.getElementById(id);
+                    if (!element?.textContent) return 0;
+                    return parseFloat(element.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+                };
+
                 // Prepare invoice data
                 const invoiceData = {
                     customer_id: customerSelect.value,
                     invoice_number: invoiceNumberInput.value,
-                    start_date: formatDate(startDate),
-                    due_date: formatDate(dueDate),
-                    subtotal: parseFloat(document.getElementById('subtotal-display')?.textContent.replace(/[^0-9.-]+/g, '')),
-                    discount: parseFloat(document.getElementById('discount-display')?.textContent.replace(/[^0-9.-]+/g, '')),
-                    transaction_fee: parseFloat(document.getElementById('fee-display')?.textContent.replace(/[^0-9.-]+/g, '')),
-                    total: parseFloat(document.getElementById('total-display')?.textContent.replace(/[^0-9.-]+/g, '')),
-                    services: services
+                    start_date: startDate.toISOString().split('T')[0],
+                    due_date: dueDate.toISOString().split('T')[0],
+                    subtotal: getDisplayValue('subtotal-display'),
+                    discount: getDisplayValue('discount-display'),
+                    transaction_fee: getDisplayValue('fee-display'),
+                    total: getDisplayValue('total-display'),
+                    services: services,
+                    facility_id: window.sessionData?.facility_id, 
+                    user_id: window.sessionData?.user_id   
                 };
 
-                // Show loading state
-                await Swal.fire({
-                    title: 'Creating Invoice...',
-                    allowOutsideClick: false,
-                    showConfirmButton: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-
-                // Submit the invoice
-                const response = await fetch('../actions/invoice_action.php', {
+                const response = await fetch('../../actions/invoice_action.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -378,27 +371,54 @@ document.addEventListener('DOMContentLoaded', function() {
                         text: 'Invoice created successfully',
                         icon: 'success'
                     });
-                    window.location.href = `view_invoice.php?id=${data.invoice_id}`;
+                    
+                    // Reset form
+                    document.getElementById('customerSelect').value = '';
+                    document.getElementById('customerDetails').style.display = 'none';
+                    document.getElementById('startDate').valueAsDate = new Date();
+                    
+                    const dueDate = new Date();
+                    dueDate.setDate(dueDate.getDate() + 30);
+                    document.getElementById('dueDate').valueAsDate = dueDate;
+                    
+                    // Reset invoice number
+                    document.getElementById('invoiceNumber').value = generateInvoiceNumber();
+                    
+                    // Clear service rows except first one
+                    const tbody = document.getElementById('inv-serviceTableBody');
+                    while (tbody.children.length > 1) {
+                        tbody.removeChild(tbody.lastChild);
+                    }
+                    
+                    // Reset first row
+                    const firstRow = tbody.firstElementChild;
+                    firstRow.querySelector('.inv-product-select').value = '';
+                    firstRow.querySelector('.inv-qty-input').value = '1';
+                    firstRow.querySelector('.inv-price-input').value = '';
+                    firstRow.querySelector('.inv-discount-input').value = '';
+                    firstRow.querySelector('.inv-subtotal span').textContent = '$0.00';
+                    
+                    // Reset totals
+                    updateTotalCalculations();
                 } else {
                     throw new Error(data.message || 'Failed to create invoice');
                 }
-
             } catch (error) {
-                console.error('Error:', error);
-                await Swal.fire({
-                    title: 'Error',
-                    text: error.message || 'Failed to create invoice',
-                    icon: 'error'
-                });
-            }
-        });
-    }
+                    console.error('Error:', error);
+                    await Swal.fire({
+                        title: 'Error',
+                        text: error.message || 'Failed to create invoice',
+                        icon: 'error'
+                    });
+                }
+            });
+        }
 
-    // Make functions globally available
-    window.updateRowCalculations = updateRowCalculations;
-    window.updateProductDetails = updateProductDetails;
-    window.updateProductQuantity = updateProductQuantity;
-
-    // Initialize calculations
-    updateTotalCalculations();
+        // Make functions globally available
+        window.updateRowCalculations = updateRowCalculations;
+        window.updateProductDetails = updateProductDetails;
+        window.updateProductQuantity = updateProductQuantity;
+        
+        // Initialize calculations
+        updateTotalCalculations();
 });

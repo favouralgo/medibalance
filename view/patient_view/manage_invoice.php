@@ -1,12 +1,26 @@
 <?php 
-include '../includes/header.php';
+include '../pincludes/header.php';
 require_once("../../controllers/invoice_controller.php");
+
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 $invoiceController = new InvoiceController();
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $entries = isset($_GET['entries']) ? (int)$_GET['entries'] : 10;
 
-$result = $invoiceController->get_all_invoices_ctr($search, $entries);
+// Check if the user is a customer or power user
+$isCustomer = isset($_SESSION['customer_id']);
+$customerId = $isCustomer ? $_SESSION['customer_id'] : null;
+
+// Get invoices based on user type
+if ($isCustomer) {
+    $result = $invoiceController->get_customer_invoices_ctr($customerId, $search, $entries);
+} else {
+    $result = $invoiceController->get_all_invoices_ctr($search, $entries);
+}
 
 if (!$result['success']) {
     echo "<div class='alert alert-danger'>{$result['message']}</div>";
@@ -15,7 +29,7 @@ if (!$result['success']) {
 
 <div class="product-list-container">
     <div class="product-list-header">
-        <h1>Invoices</h1>
+        <h1><?php echo $isCustomer ? 'My Invoices' : 'All Invoices'; ?></h1>
     </div>
     
     <div class="product-list-controls">
@@ -31,7 +45,9 @@ if (!$result['success']) {
         </div>
         
         <div class="search-control">
-            <input type="text" class="search-input" id="searchInput" placeholder="Search..." value="<?php echo htmlspecialchars($search); ?>">
+            <input type="text" class="search-input" id="searchInput" 
+                   placeholder="<?php echo $isCustomer ? 'Search invoice/status...' : 'number...'; ?>" 
+                   value="<?php echo htmlspecialchars($search); ?>">
             <i class="fas fa-search search-icon" id="searchButton"></i>
         </div>
     </div>
@@ -40,11 +56,14 @@ if (!$result['success']) {
         <thead>
             <tr>
                 <th>Invoice Number <i class="fas fa-sort sort-icon"></i></th>
-                <th>Customer <i class="fas fa-sort sort-icon"></i></th>
+                <?php if (!$isCustomer): ?>
+                    <th>Customer <i class="fas fa-sort sort-icon"></i></th>
+                <?php endif; ?>
                 <th>Issue Date <i class="fas fa-sort sort-icon"></i></th>
                 <th>Due Date <i class="fas fa-sort sort-icon"></i></th>
                 <th>Status <i class="fas fa-sort sort-icon"></i></th>
                 <th>Amount</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -52,7 +71,9 @@ if (!$result['success']) {
                 <?php foreach ($result['data'] as $invoice): ?>
                     <tr>
                         <td><?php echo htmlspecialchars($invoice['invoice_number']); ?></td>
-                        <td><?php echo htmlspecialchars($invoice['customer_name']); ?></td>
+                        <?php if (!$isCustomer): ?>
+                            <td><?php echo htmlspecialchars($invoice['customer_name']); ?></td>
+                        <?php endif; ?>
                         <td><?php echo date('d/m/Y', strtotime($invoice['invoice_date_start'])); ?></td>
                         <td><?php echo date('d/m/Y', strtotime($invoice['invoice_date_due'])); ?></td>
                         <td>
@@ -64,17 +85,46 @@ if (!$result['success']) {
                             </span>
                         </td>
                         <td><?php echo '$' . number_format($invoice['invoice_total'], 2); ?></td>
+                        <td>
+                            <button onclick="viewInvoiceDetails(<?php echo $invoice['invoice_id']; ?>)" 
+                                    class="btn btn-sm btn-primary">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            <?php if ($isCustomer && $invoice['status_name'] !== 'PAID'): ?>
+                                <a href="pay_invoice.php?id=<?php echo $invoice['invoice_id']; ?>" 
+                                   class="btn btn-sm btn-success">
+                                    <i class="fas fa-credit-card"></i> Pay
+                                </a>
+                            <?php endif; ?>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="6" class="text-center">No invoices found</td>
+                    <td colspan="<?php echo $isCustomer ? '6' : '7'; ?>" class="text-center">No invoices found</td>
                 </tr>
             <?php endif; ?>
         </tbody>
     </table>
-
 </div>
+
+<!-- View Invoice Details Modal -->
+<div class="modal fade" id="viewInvoiceModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg"> <!-- Changed to modal-lg for wider display -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Invoice Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="invoiceDetails" class="row">
+                    <!-- Invoice details will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -88,23 +138,15 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = `?search=${encodeURIComponent(searchValue)}&entries=${entriesValue}`;
     }
     
-    // Search button click
-    searchButton.addEventListener('click', function() {
-        updateTable();
-    });
-    
-    // Search on enter key
+    searchButton.addEventListener('click', updateTable);
     searchInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             updateTable();
         }
     });
-    
-    // Entries select change
-    entriesSelect.addEventListener('change', function() {
-        updateTable();
-    });
+    entriesSelect.addEventListener('change', updateTable);
 });
 </script>
+<script src="../../js/invoice.js"></script>
 
-<?php include '../includes/footer.php'; ?>
+<?php include '../pincludes/footer.php'; ?>

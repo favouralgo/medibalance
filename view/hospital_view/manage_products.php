@@ -5,40 +5,19 @@ require_once('../../controllers/product_controller.php');
 // Initialize Product Controller
 $productController = new ProductController();
 
-// Get all products using the controller instance
-$products = $productController->get_all_products_ctr();
+// Get search and entries parameters with proper defaults
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$entries = isset($_GET['entries']) ? (int)$_GET['entries'] : 10;
 
-// Handle search if submitted
-$search_query = isset($_GET['search']) ? $_GET['search'] : '';
-$entries_per_page = isset($_GET['entries']) ? (int)$_GET['entries'] : 10;
+// Get filtered products
+$result = $productController->get_all_products_ctr($search, $entries);
+error_log("Products result: " . print_r($result, true));
 
-// Initialize filtered products array
-$filtered_products = [];
-
-if ($products !== false) {
-    foreach ($products as $product) {
-        // If there's a search query, filter products
-        if ($search_query !== '') {
-            if (stripos($product['product_name'], $search_query) !== false || 
-                stripos($product['product_description'], $search_query) !== false) {
-                $filtered_products[] = $product;
-            }
-        } else {
-            $filtered_products[] = $product;
-        }
-    }
+// Ensure $result has a valid structure
+if (!isset($result['success'])) {
+    $result = ['success' => false, 'data' => [], 'message' => 'Invalid response from controller'];
 }
-
-// Pagination logic
-$current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$total_products = count($filtered_products);
-$total_pages = ceil($total_products / $entries_per_page);
-$offset = ($current_page - 1) * $entries_per_page;
-
-// Get products for current page
-$current_products = array_slice($filtered_products, $offset, $entries_per_page);
 ?>
-
 
 <div class="product-list-container">
     <!-- Message Display -->
@@ -46,14 +25,14 @@ $current_products = array_slice($filtered_products, $offset, $entries_per_page);
         <?php
         if (isset($_SESSION['error_msg'])) {
             echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    ' . $_SESSION['error_msg'] . '
+                    ' . htmlspecialchars($_SESSION['error_msg']) . '
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                   </div>';
             unset($_SESSION['error_msg']);
         }
         if (isset($_SESSION['success_msg'])) {
             echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
-                    ' . $_SESSION['success_msg'] . '
+                    ' . htmlspecialchars($_SESSION['success_msg']) . '
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                   </div>';
             unset($_SESSION['success_msg']);
@@ -68,79 +47,66 @@ $current_products = array_slice($filtered_products, $offset, $entries_per_page);
     <div class="product-list-controls">
         <div class="entries-control">
             Show 
-            <select class="entries-select" onchange="updateEntries(this.value)">
-                <option value="10" <?php echo $entries_per_page == 10 ? 'selected' : ''; ?>>10</option>
-                <option value="25" <?php echo $entries_per_page == 25 ? 'selected' : ''; ?>>25</option>
-                <option value="50" <?php echo $entries_per_page == 50 ? 'selected' : ''; ?>>50</option>
-                <option value="100" <?php echo $entries_per_page == 100 ? 'selected' : ''; ?>>100</option>
+            <select class="entries-select" id="entriesSelect">
+                <option value="10" <?php echo $entries == 10 ? 'selected' : ''; ?>>10</option>
+                <option value="25" <?php echo $entries == 25 ? 'selected' : ''; ?>>25</option>
+                <option value="50" <?php echo $entries == 50 ? 'selected' : ''; ?>>50</option>
+                <option value="100" <?php echo $entries == 100 ? 'selected' : ''; ?>>100</option>
             </select>
             entries
         </div>
         
         <div class="search-control">
-            <input type="text" class="search-input" placeholder="Search..." 
-                   value="<?php echo htmlspecialchars($search_query); ?>" 
-                   onkeyup="searchProducts(this.value)">
-            <i class="fas fa-search search-icon"></i>
+                <input type="text" 
+                       class="search-input" 
+                       id="searchInput" 
+                       placeholder="Search..." 
+                       value="<?php echo htmlspecialchars($search ?? ''); ?>">
+                <i class="fas fa-search search-icon" id="searchButton"></i>
         </div>
     </div>
 
-    <table class="product-table">
-        <thead>
-            <tr>
-                <th>Service <i class="fas fa-sort sort-icon"></i></th>
-                <th>Description <i class="fas fa-sort sort-icon"></i></th>
-                <th>Price <i class="fas fa-sort sort-icon"></i></th>
-                <th>Quantity <i class="fas fa-sort sort-icon"></i></th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if ($current_products): ?>
-                <?php foreach ($current_products as $product): ?>
+        <table class="product-table">
+            <thead>
+                <tr>
+                    <th>Service <i class="fas fa-sort sort-icon"></i></th>
+                    <th>Description <i class="fas fa-sort sort-icon"></i></th>
+                    <th>Price <i class="fas fa-sort sort-icon"></i></th>
+                    <th>Quantity <i class="fas fa-sort sort-icon"></i></th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php 
+                if (isset($result['data']) && !empty($result['data'])): 
+                    foreach ($result['data'] as $product): 
+                ?>
                     <tr>
                         <td><?php echo htmlspecialchars($product['product_name']); ?></td>
                         <td><?php echo htmlspecialchars($product['product_description']); ?></td>
-                        <td>$<?php echo number_format($product['product_price'], 2); ?></td>
+                        <td>$<?php echo number_format((float)$product['product_price'], 2); ?></td>
                         <td><?php echo htmlspecialchars($product['product_quantity']); ?></td>
                         <td>
                             <div class="action-buttons">
-                                <button class="btn-edit" onclick="openEditModal(<?php echo $product['product_id']; ?>)"><i class="fas fa-edit"></i></button>
-                                <button class="btn-delete" onclick="openDeleteModal(<?php echo $product['product_id']; ?>)"><i class="fas fa-trash"></i></button>
+                                <button class="btn-edit" onclick="openEditModal(<?php echo $product['product_id']; ?>)">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-delete" onclick="openDeleteModal(<?php echo $product['product_id']; ?>)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
                             </div>
                         </td>
                     </tr>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="5" class="text-center">No products found</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
-
-    <div class="product-pagination">
-        <?php if ($total_pages > 1): ?>
-            <button class="pagination-button" 
-                    onclick="changePage(<?php echo max(1, $current_page - 1); ?>)"
-                    <?php echo $current_page == 1 ? 'disabled' : ''; ?>>
-                Previous
-            </button>
-            
-            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                <button class="pagination-button <?php echo $current_page == $i ? 'active' : ''; ?>"
-                        onclick="changePage(<?php echo $i; ?>)">
-                    <?php echo $i; ?>
-                </button>
-            <?php endfor; ?>
-            
-            <button class="pagination-button" 
-                    onclick="changePage(<?php echo min($total_pages, $current_page + 1); ?>)"
-                    <?php echo $current_page == $total_pages ? 'disabled' : ''; ?>>
-                Next
-            </button>
-        <?php endif; ?>
-    </div>
+                <?php 
+                    endforeach; 
+                else: 
+                ?>
+                    <tr>
+                        <td colspan="5" class="text-center">No products found</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
 </div>
 
 <!-- Edit Product Modal -->
@@ -199,9 +165,8 @@ $current_products = array_slice($filtered_products, $offset, $entries_per_page);
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Scripts -->
 <script src="../../js/product.js"></script>
+
 
 <?php include '../includes/footer.php'; ?>
