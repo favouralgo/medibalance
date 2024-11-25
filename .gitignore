@@ -27,4 +27,4 @@ debug.log
 
 # Database
 settings/db_cred.php
-db/medibalance.sql
+db/*.sql
