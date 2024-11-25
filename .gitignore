@@ -2,6 +2,7 @@ password.txt
 
 # PHP Configuration Files
 actions/customer_action.php
+actions/pay_process.php
 **/config/*.php
 *.config.php
 .env
