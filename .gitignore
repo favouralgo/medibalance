@@ -4,6 +4,8 @@ password.txt
 actions/customer_action.php
 actions/pay_process.php
 js/pay.js
+view/patient_view/pay_invoice.php
+view/patient_view/verify_payment.php
 **/config/*.php
 *.config.php
 .env
