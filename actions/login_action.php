@@ -44,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['customer_id'] = $customer['customer_id'];
                 $_SESSION['customer_firstname'] = $customer['customer_firstname'];
                 $_SESSION['customer_lastname'] = $customer['customer_lastname'];
+                $_SESSION['customer_email'] = $customer['customer_email'];
                 $_SESSION['user_type'] = 'customer';
                 echo json_encode(["success" => true, "message" => "Login successful", "redirect" => "../view/patient_view/patient_dashboard.php"]);
                 exit;
