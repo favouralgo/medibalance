@@ -128,6 +128,9 @@ document.addEventListener('DOMContentLoaded', function() {
             'manage_product.php': 'My Services',
             'add_funds.php': 'Add Funds',
             'manage_transactions.php': 'Transaction History',
+            'pay_invoice.php': 'Pay Invoice',
+            'success.php': 'Payment Successful',
+            'profile_settings.php': 'Profile Settings',
             'manage_wallet.php': 'My Wallet'
         };
 

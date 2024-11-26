@@ -488,27 +488,79 @@ class InvoiceModel extends db_connection {
         }
     }
 
+
     public function update_invoice_status($invoice_id, $status_id) {
+        $conn = null;
         try {
             $conn = $this->db_conn();
-            
-            $sql = "UPDATE invoice SET status_id = ? WHERE invoice_id = ?";
-            $stmt = $conn->prepare($sql);
-            
-            if (!$stmt) {
-                throw new Exception("Failed to prepare statement: " . $conn->error);
+            $conn->autocommit(FALSE); // Start transaction
+
+            // First verify the invoice exists
+            $check_sql = "SELECT status_id FROM invoice WHERE invoice_id = ?";
+            $check_stmt = $conn->prepare($check_sql);
+            if (!$check_stmt) {
+                throw new Exception("Failed to prepare check statement: " . $conn->error);
             }
-            
+
+            $check_stmt->bind_param("i", $invoice_id);
+
+            if (!$check_stmt->execute()) {
+                throw new Exception("Failed to check invoice: " . $check_stmt->error);
+            }
+
+            $result = $check_stmt->get_result();
+            if ($result->num_rows === 0) {
+                throw new Exception("Invoice not found");
+            }
+
+            // Update invoice status
+            $sql = "UPDATE invoice 
+                    SET status_id = ?, 
+                        updated_at = CURRENT_TIMESTAMP 
+                    WHERE invoice_id = ?";
+
+            $stmt = $conn->prepare($sql);
+            if (!$stmt) {
+                throw new Exception("Failed to prepare invoice update statement: " . $conn->error);
+            }
+
             $stmt->bind_param("ii", $status_id, $invoice_id);
-            
+
             if (!$stmt->execute()) {
                 throw new Exception("Failed to update invoice: " . $stmt->error);
             }
-            
-            return $stmt->affected_rows > 0;
-            
+
+            // Update invoice_product statuses
+            $product_sql = "UPDATE invoice_product 
+                           SET status_id = ?,
+                               updated_at = CURRENT_TIMESTAMP 
+                           WHERE invoice_id = ?";
+
+            $product_stmt = $conn->prepare($product_sql);
+            if (!$product_stmt) {
+                throw new Exception("Failed to prepare product update statement: " . $conn->error);
+            }
+
+            $product_stmt->bind_param("ii", $status_id, $invoice_id);
+
+            if (!$product_stmt->execute()) {
+                throw new Exception("Failed to update invoice products: " . $product_stmt->error);
+            }
+
+            // If we get here, all updates were successful
+            $conn->commit();
+            return true;
+
         } catch (Exception $e) {
-            throw new Exception("Database error: " . $e->getMessage());
+            if ($conn) {
+                $conn->rollback();
+            }
+            error_log("Failed to update invoice status: " . $e->getMessage());
+            throw new Exception("Failed to update payment status: " . $e->getMessage());
+        } finally {
+            if ($conn) {
+                $conn->autocommit(TRUE);
+            }
         }
     }
 }
