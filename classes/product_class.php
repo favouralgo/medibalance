@@ -3,25 +3,26 @@ require_once(__DIR__ . "/../settings/db_class.php");
 
 class ProductModel extends db_connection {
     //--INSERT FUNCTION--//
-    public function add_product($product_name, $product_description, $product_price, $product_quantity) {
-        $product_name = mysqli_real_escape_string($this->db_conn(), $product_name);
-        $product_description = mysqli_real_escape_string($this->db_conn(), $product_description);
-        $product_price = mysqli_real_escape_string($this->db_conn(), $product_price);
-        $product_quantity = mysqli_real_escape_string($this->db_conn(), $product_quantity);
-        
-        //--INSERT QUERY--//
-        $sql = "INSERT INTO `product`(`product_name`, `product_description`, `product_price`, `product_quantity`) 
-                VALUES (?, ?, ?, ?)";
-        $stmt = $this->db_conn()->prepare($sql);
-        if (!$stmt) {
-            throw new Exception("Prepare statement failed: " . $this->db_conn()->error);
-        }
-        $stmt->bind_param("ssdi", $product_name, $product_description, $product_price, $product_quantity);
-        if (!$stmt->execute()) {
-            throw new Exception("Execute statement failed: " . $stmt->error);
-        }
-        return true;
+    //--INSERT FUNCTION--//
+public function add_product($product_name, $product_description, $product_price, $product_quantity, $user_id) {
+    $product_name = mysqli_real_escape_string($this->db_conn(), $product_name);
+    $product_description = mysqli_real_escape_string($this->db_conn(), $product_description);
+    $product_price = mysqli_real_escape_string($this->db_conn(), $product_price);
+    $product_quantity = mysqli_real_escape_string($this->db_conn(), $product_quantity);
+    
+    //--INSERT QUERY--//
+    $sql = "INSERT INTO `product`(`product_name`, `product_description`, `product_price`, `product_quantity`, `user_id`) 
+            VALUES (?, ?, ?, ?, ?)";
+    $stmt = $this->db_conn()->prepare($sql);
+    if (!$stmt) {
+        throw new Exception("Prepare statement failed: " . $this->db_conn()->error);
     }
+    $stmt->bind_param("ssdii", $product_name, $product_description, $product_price, $product_quantity, $user_id);
+    if (!$stmt->execute()) {
+        throw new Exception("Execute statement failed: " . $stmt->error);
+    }
+    return true;
+}
 
     //--SELECT ALL PRODUCTS FUNCTION--//
     public function get_all_products($search = '', $limit = 10, $user_id = null) {

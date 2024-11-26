@@ -2,6 +2,13 @@
 session_start();
 require_once('../controllers/product_controller.php');
 
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    $_SESSION['error_msg'] = "You must be logged in to add products";
+    header("Location: ../view/hospital_view/add_product.php");
+    exit();
+}
+
 // Check if the form was submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
@@ -10,6 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $product_description = htmlspecialchars(trim($_POST['product_description']));
         $product_price = floatval($_POST['product_price']);
         $product_quantity = intval($_POST['product_quantity']);
+        $user_id = $_SESSION['user_id']; // Get user_id from session
 
         // Validate inputs
         $errors = array();
@@ -39,12 +47,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Create instance of ProductController
             $productController = new ProductController();
             
-            // Call the add product method
+            // Call the add product method with user_id
             $result = $productController->add_product_ctr(
                 $product_name, 
                 $product_description, 
                 $product_price, 
-                $product_quantity
+                $product_quantity,
+                $user_id
             );
 
             if ($result) {

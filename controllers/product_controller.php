@@ -8,8 +8,8 @@ class ProductController {
         $this->productModel = new ProductModel();
     }
 
-    public function add_product_ctr($product_name, $product_description, $product_price, $product_quantity) {
-        return $this->productModel->add_product($product_name, $product_description, $product_price, $product_quantity);
+    public function add_product_ctr($product_name, $product_description, $product_price, $product_quantity, $user_id) {
+        return $this->productModel->add_product($product_name, $product_description, $product_price, $product_quantity, $user_id);
     }
 
     public function get_all_products_ctr($search = '', $entries = 10) {

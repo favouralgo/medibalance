@@ -85,5 +85,73 @@
             <img src="/api/placeholder/500/400" alt="Dashboard Preview" style="width: 100%; border-radius: 8px;" />
         </div>
     </section>
+
+    <section class="benefits-section">
+        <div style="flex: 1;">
+            <img src="/api/placeholder/500/400" alt="Dashboard Preview" style="width: 100%; border-radius: 8px;" />
+        </div>
+        <div style="flex: 1;">
+            <h2 style="color: var(--primary-green); margin-bottom: 2rem;">Simplify Your Healthcare Practice Management</h2>
+            <ul class="check-list">
+                <li><span class="check-icon">✓</span> Streamlined medical billing and invoicing</li>
+                <li><span class="check-icon">✓</span> Real-time insurance claim tracking</li>
+                <li><span class="check-icon">✓</span> Integrated pharmacy management system</li>
+            </ul>
+            <a href="#" class="btn btn-primary" style="margin-top: 2rem;">Explore All Features</a>
+        </div>
+    </section>
+
+    <section class="benefits-section">
+        <div style="flex: 1;">
+            <h2 style="color: var(--primary-green); margin-bottom: 2rem;">Simplify Your Healthcare Practice Management</h2>
+            <ul class="check-list">
+                <li><span class="check-icon">✓</span> Streamlined medical billing and invoicing</li>
+                <li><span class="check-icon">✓</span> Real-time insurance claim tracking</li>
+                <li><span class="check-icon">✓</span> Integrated pharmacy management system</li>
+            </ul>
+            <a href="#" class="btn btn-primary" style="margin-top: 2rem;">Explore All Features</a>
+        </div>
+        <div style="flex: 1;">
+            <img src="/api/placeholder/500/400" alt="Dashboard Preview" style="width: 100%; border-radius: 8px;" />
+        </div>
+    </section>
+
+    <section class="benefits-section">
+        <div style="flex: 1;">
+            <img src="/api/placeholder/500/400" alt="Dashboard Preview" style="width: 100%; border-radius: 8px;" />
+        </div>
+        <div style="flex: 1;">
+            <h2 style="color: var(--primary-green); margin-bottom: 2rem;">Simplify Your Healthcare Practice Management</h2>
+            <ul class="check-list">
+                <li><span class="check-icon">✓</span> Streamlined medical billing and invoicing</li>
+                <li><span class="check-icon">✓</span> Real-time insurance claim tracking</li>
+                <li><span class="check-icon">✓</span> Integrated pharmacy management system</li>
+            </ul>
+            <a href="#" class="btn btn-primary" style="margin-top: 2rem;">Explore All Features</a>
+        </div>
+    </section>
 </body>
+
+
+<script>
+// Sticky navbar effect
+window.addEventListener('scroll', function() {
+    const navbar = document.querySelector('.navbar');
+    if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+});
+
+// Mobile menu toggle
+const mobileMenuBtn = document.createElement('button');
+mobileMenuBtn.classList.add('mobile-menu-btn');
+mobileMenuBtn.innerHTML = '☰';
+document.querySelector('.navbar').appendChild(mobileMenuBtn);
+
+mobileMenuBtn.addEventListener('click', function() {
+    document.querySelector('.nav-links').classList.toggle('active');
+});
+</script>
 </html>
