@@ -487,5 +487,29 @@ class InvoiceModel extends db_connection {
             throw new Exception("Failed to fetch monthly statistics");
         }
     }
+
+    public function update_invoice_status($invoice_id, $status_id) {
+        try {
+            $conn = $this->db_conn();
+            
+            $sql = "UPDATE invoice SET status_id = ? WHERE invoice_id = ?";
+            $stmt = $conn->prepare($sql);
+            
+            if (!$stmt) {
+                throw new Exception("Failed to prepare statement: " . $conn->error);
+            }
+            
+            $stmt->bind_param("ii", $status_id, $invoice_id);
+            
+            if (!$stmt->execute()) {
+                throw new Exception("Failed to update invoice: " . $stmt->error);
+            }
+            
+            return $stmt->affected_rows > 0;
+            
+        } catch (Exception $e) {
+            throw new Exception("Database error: " . $e->getMessage());
+        }
+    }
 }
 ?>

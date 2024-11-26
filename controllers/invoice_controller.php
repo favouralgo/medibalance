@@ -139,5 +139,27 @@ class InvoiceController {
             ];
         }
     }
+
+    public function update_invoice_status_ctr($invoice_id, $status_id) {
+        try {
+            if (empty($invoice_id)) {
+                throw new Exception("Invoice ID is required");
+            }
+            
+            if (!in_array($status_id, [1, 2])) { // 1 = PAID, 2 = UNPAID
+                throw new Exception("Invalid status ID");
+            }
+            
+            return [
+                'success' => true,
+                'data' => $this->invoiceModel->update_invoice_status($invoice_id, $status_id)
+            ];
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'message' => $e->getMessage()
+            ];
+        }
+    }
 }
 ?>
