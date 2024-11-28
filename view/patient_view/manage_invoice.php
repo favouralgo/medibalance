@@ -148,5 +148,50 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 <script src="../../js/invoice.js"></script>
+<style>
+.invoice-details-container {
+    padding: 1rem;
+}
+
+.invoice-header {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+}
+
+.products-section {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+}
+
+.invoice-summary {
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+}
+
+#viewInvoiceModal .modal-body {
+    padding: 1rem;
+}
+
+.badge.fs-6 {
+    font-size: 1rem !important;
+    padding: 0.5rem 1rem;
+}
+
+.table-responsive {
+    margin: 0;
+    padding: 0;
+}
+
+.products-section .table th {
+    background-color: #fff;
+}
+
+.invoice-summary .table-sm td {
+    padding: 0.5rem;
+}
+</style>
+
 
 <?php include '../pincludes/footer.php'; ?>

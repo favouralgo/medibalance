@@ -44,7 +44,6 @@ class CustomerController {
         return $this->customerModel->delete_customer($customer_id);
     }
 }
-//http://localhost/medibalance/view/patient_view/set_password.php
 ?>
     
     

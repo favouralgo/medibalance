@@ -131,6 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'pay_invoice.php': 'Pay Invoice',
             'success.php': 'Payment Successful',
             'profile_settings.php': 'Profile Settings',
+            'verify_payment.php': 'Verify Payment',
             'manage_wallet.php': 'My Wallet'
         };
 

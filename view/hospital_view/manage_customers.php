@@ -82,8 +82,8 @@ $total_pages = ceil($total_customers / $entries_per_page);
 </div>
 
 <!-- Edit Customer Modal -->
-<div class="modal" id="editCustomerModal">
-    <div class="modal-dialog">
+<div class="modal fade" id="editCustomerModal" tabindex="-1" role="dialog" aria-labelledby="editCustomerModalLabel">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Edit Customer</h5>
@@ -148,9 +148,10 @@ $total_pages = ceil($total_customers / $entries_per_page);
     </div>
 </div>
 
-<script src="../../js/customer.js"></script>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="../../js/customer.js"></script>
 
 <?php include '../includes/footer.php'; ?>

@@ -91,14 +91,22 @@ $(document).ready(function() {
         if (!validateEditForm()) {
             return;
         }
-
+    
+        const submitButton = $(this).find('button[type="submit"]');
+        submitButton.prop('disabled', true);
+    
         const formData = $(this).serialize();
+        
+        // Log the form data being sent
+        //console.log('Form data being sent:', formData);
+    
         $.ajax({
             url: '../../actions/update_customer_action.php',
             type: 'POST',
             data: formData,
             dataType: 'json',
             success: function(response) {
+                //console.log('Success response:', response);
                 if (response.success) {
                     Swal.fire({
                         title: 'Success',
@@ -114,7 +122,23 @@ $(document).ready(function() {
             },
             error: function(xhr, status, error) {
                 console.error('Update Error:', error);
-                Swal.fire('Error', 'An error occurred while updating the customer', 'error');
+                console.error('Status:', status);
+                console.error('Response:', xhr.responseText);
+                
+                let errorMessage = 'An error occurred while updating the customer';
+                try {
+                    if (xhr.responseText) {
+                        const response = JSON.parse(xhr.responseText);
+                        errorMessage = response.message || errorMessage;
+                    }
+                } catch (e) {
+                    console.error('Response parsing error:', e);
+                }
+                
+                Swal.fire('Error', errorMessage, 'error');
+            },
+            complete: function() {
+                submitButton.prop('disabled', false);
             }
         });
     });
@@ -128,7 +152,7 @@ $(document).ready(function() {
 // Function to open edit modal
 function openEditModal(customerId) {
     $.ajax({
-        url: '../../actions/get_customer_action.php',
+        url: '../../actions/get_customer_details.php',
         type: 'GET',
         data: { customer_id: customerId },
         dataType: 'json',

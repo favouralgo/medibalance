@@ -52,11 +52,11 @@ try {
 <div class="container-fluid">
     <div class="row">
         <!-- Sales Amount -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-4 col-md-8">
             <div class="metric-card sales">
                 <div class="metric-content">
                     <div class="metric-info">
-                    <div class="metric-value">$<?php echo number_format($stats['total_revenue'] ?? 0, 2); ?></div>
+                    <div class="metric-value">GHS <?php echo number_format($stats['total_revenue'] ?? 0, 2); ?></div>
                     <div class="metric-label">Sales Amount</div>
                     </div>
                     <div class="metric-icon">
@@ -67,7 +67,7 @@ try {
         </div>
 
         <!-- Total Invoices -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-4 col-md-8">
             <div class="metric-card invoices">
                 <div class="metric-content">
                     <div class="metric-info">
@@ -82,7 +82,7 @@ try {
         </div>
 
         <!-- Pending Bills -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-4 col-md-8">
             <div class="metric-card pending">
                 <div class="metric-content">
                     <div class="metric-info">
@@ -97,11 +97,11 @@ try {
         </div>
 
         <!-- Due Amount -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-4 col-md-8">
             <div class="metric-card due">
                 <div class="metric-content">
                     <div class="metric-info">
-                        <div class="metric-value">$<?php echo number_format($stats['due_amount'] ?? 0, 2); ?></div>
+                        <div class="metric-value">GHS <?php echo number_format($stats['due_amount'] ?? 0, 2); ?></div>
                         <div class="metric-label">Due Amount</div>
                     </div>
                     <div class="metric-icon">
@@ -112,7 +112,7 @@ try {
         </div>
 
         <!-- Total Products -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-4 col-md-8">
             <div class="metric-card products">
                 <div class="metric-content">
                     <div class="metric-info">
@@ -127,7 +127,7 @@ try {
         </div>
 
         <!-- Total Customers -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-4 col-md-8">
             <div class="metric-card customers">
                 <div class="metric-content">
                     <div class="metric-info">
@@ -142,7 +142,7 @@ try {
         </div>
 
         <!-- Paid Bills -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-4 col-md-8">
             <div class="metric-card paid">
                 <div class="metric-content">
                     <div class="metric-info">
@@ -185,7 +185,7 @@ try {
                                     <tr>
                                         <td><?php echo htmlspecialchars($invoice['invoice_number']); ?></td>
                                         <td><?php echo htmlspecialchars($invoice['customer_name']); ?></td>
-                                        <td>$<?php echo number_format($invoice['invoice_total'], 2); ?></td>
+                                        <td>GHS <?php echo number_format($invoice['invoice_total'], 2); ?></td>
                                         <td><?php echo date('Y-m-d', strtotime($invoice['invoice_date_start'])); ?></td>
                                         <td>
                                             <span class="badge <?php echo $invoice['status_name'] === 'PAID' ? 'bg-success' : 'bg-warning'; ?>">
@@ -193,8 +193,9 @@ try {
                                             </span>
                                         </td>
                                         <td>
-                                            <a href="view_invoice.php?id=<?php echo $invoice['invoice_id']; ?>" 
-                                               class="btn btn-sm btn-primary">View</a>
+                                            <button onclick="viewInvoiceDetails(<?php echo $invoice['invoice_id']; ?>)" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-eye"></i> View
+                                            </button>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -243,7 +244,7 @@ try {
                                         Invoice #<?php echo htmlspecialchars($activity['invoice_number']); ?> 
                                         for <?php echo htmlspecialchars($activity['customer_name']); ?>
                                     <?php else: ?>
-                                        $<?php echo number_format($activity['amount'], 2); ?> 
+                                        GHS <?php echo number_format($activity['amount'], 2); ?> 
                                         from <?php echo htmlspecialchars($activity['customer_name']); ?>
                                     <?php endif; ?>
                                 </div>
@@ -290,5 +291,164 @@ try {
         </div>
     </div>
 </div>
+
+<!-- Modal for invoice -->
+<div class="modal fade" id="viewInvoiceModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Invoice Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="invoiceDetails">
+                    <!-- Invoice details will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function viewInvoiceDetails(invoiceId) {
+    // Show loading state
+    const modalBody = document.getElementById('invoiceDetails');
+    modalBody.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x"></i></div>';
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('viewInvoiceModal'));
+    modal.show();
+
+    // Fetch invoice details
+    fetch(`../../actions/get_invoice_action.php?id=${invoiceId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const invoice = data.data;
+                let products = '';
+                
+                // Build products table
+                if (invoice.products && invoice.products.length > 0) {
+                    products = `
+                        <table class="table table-sm mt-3">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Description</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${invoice.products.map(product => `
+                                    <tr>
+                                        <td>${product.invoiceproduct_name}</td>
+                                        <td>${product.invoiceproduct_description || '-'}</td>
+                                        <td>${product.invoiceproduct_quantity}</td>
+                                        <td>GHS ${Number(product.invoiceproduct_price).toFixed(2)}</td>
+                                        <td>GHS ${Number(product.invoiceproduct_subtotal).toFixed(2)}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                }
+
+                // Update modal content
+                modalBody.innerHTML = `
+                    <div class="invoice-header d-flex justify-content-between align-items-start mb-4">
+                        <div>
+                            <h4 class="mb-1">Invoice #${invoice.invoice_number}</h4>
+                            <p class="text-muted mb-0">Facility: ${invoice.facility_name}</p>
+                        </div>
+                        <span class="badge ${invoice.status_name === 'PAID' ? 'bg-success' : 'bg-warning'} fs-6">
+                            ${invoice.status_name}
+                        </span>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6>Issue Date</h6>
+                            <p>${new Date(invoice.invoice_date_start).toLocaleDateString()}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Due Date</h6>
+                            <p>${new Date(invoice.invoice_date_due).toLocaleDateString()}</p>
+                        </div>
+                    </div>
+
+                    <div class="products-section">
+                        <h6>Products/Services</h6>
+                        ${products}
+                    </div>
+
+                    <div class="invoice-summary mt-4">
+                        <div class="row justify-content-end">
+                            <div class="col-md-5">
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td>Subtotal</td>
+                                        <td class="text-end">GHS ${Number(invoice.invoice_subtotal).toFixed(2)}</td>
+                                    </tr>
+                                    ${Number(invoice.invoice_discount) > 0 ? `
+                                        <tr>
+                                            <td>Discount</td>
+                                            <td class="text-end">GHS ${Number(invoice.invoice_discount).toFixed(2)}</td>
+                                        </tr>
+                                    ` : ''}
+                                    ${Number(invoice.invoice_vat) > 0 ? `
+                                        <tr>
+                                            <td>VAT</td>
+                                            <td class="text-end">GHS ${Number(invoice.invoice_vat).toFixed(2)}</td>
+                                        </tr>
+                                    ` : ''}
+                                    <tr class="fw-bold">
+                                        <td>Total</td>
+                                        <td class="text-end">GHS ${Number(invoice.invoice_total).toFixed(2)}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                modalBody.innerHTML = '<div class="alert alert-danger">Failed to load invoice details</div>';
+            }
+        })
+        .catch(error => {
+            modalBody.innerHTML = '<div class="alert alert-danger">Error loading invoice details</div>';
+            console.error('Error:', error);
+        });
+}
+</script>
+
+
+<style>
+.invoice-header {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+}
+
+.products-section {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.invoice-summary {
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+}
+
+#viewInvoiceModal .modal-body {
+    padding: 2rem;
+}
+
+.badge.fs-6 {
+    font-size: 1rem !important;
+    padding: 0.5rem 1rem;
+}
+</style>
 
 <?php include '../includes/footer.php'; ?>
