@@ -6,6 +6,12 @@ actions/pay_process.php
 js/pay.js
 view/patient_view/pay_invoice.php
 view/patient_view/verify_payment.php
+view/public_view/verify_payment.php
+js/public_payment.js
+controllers/email_controller.php
+view/public/verify_payment.php
+
+
 **/config/*.php
 *.config.php
 .env

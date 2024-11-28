@@ -488,6 +488,28 @@ class InvoiceModel extends db_connection {
         }
     }
 
+    public function get_invoice_by_number($invoice_number) {
+        $conn = $this->db_conn();
+        $invoice_number = mysqli_real_escape_string($conn, $invoice_number);
+        
+        $sql = "SELECT i.*, c.customer_firstname, c.customer_lastname, c.customer_email, 
+                u.user_email, u.user_firstname as creator_firstname, u.user_lastname as creator_lastname
+                FROM invoice i 
+                JOIN customer c ON i.customer_id = c.customer_id 
+                JOIN user u ON i.user_id = u.user_id 
+                WHERE i.invoice_number = ?";
+                
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            throw new Exception("Prepare failed: " . $conn->error);
+        }
+        
+        $stmt->bind_param("s", $invoice_number);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
+    }
+
 
     public function update_invoice_status($invoice_id, $status_id) {
         $conn = null;

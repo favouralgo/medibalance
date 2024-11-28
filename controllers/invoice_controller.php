@@ -1,4 +1,12 @@
 <?php
+
+if (!file_exists(__DIR__ . "/../classes/invoice_class.php")) {
+    die(json_encode([
+        'success' => false,
+        'message' => 'Invoice class file not found'
+    ]));
+}
+
 require_once(__DIR__ . "/../classes/invoice_class.php");
 
 class InvoiceController {
@@ -136,6 +144,31 @@ class InvoiceController {
             return [
                 'sales_percentage' => 0,
                 'paid_percentage' => 0
+            ];
+        }
+    }
+
+    public function get_invoice_by_number_ctr($invoice_number) {
+        try {
+            if (empty($invoice_number)) {
+                throw new Exception("Invoice number is required");
+            }
+            
+            $invoice = $this->invoiceModel->get_invoice_by_number($invoice_number);
+            
+            if (!$invoice) {
+                throw new Exception("Invoice not found");
+            }
+            
+            return [
+                'success' => true,
+                'data' => $invoice
+            ];
+            
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'message' => $e->getMessage()
             ];
         }
     }
