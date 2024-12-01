@@ -28,106 +28,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invoice_number'])) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/invoice.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> -->
     <title>MediBalance - Invoice Payment</title>
     <script>
     if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_RELOAD) {
         window.location.href = window.location.pathname;
     }
     </script>
-    
-    <!-- Space Grotesk Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Bootstrap CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
-    <!-- <link href="../../css/invoice.css" rel="stylesheet"> -->
 
-    <style>
-        .payment-container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-        .logo-container {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .logo-container img {
-            max-width: 200px;
-        }
-        .search-form {
-            max-width: 500px;
-            margin: 0 auto 30px;
-        }
-        .invoice-details {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 8px;
-            margin-top: 30px;
-        }
-        .status-paid {
-            background: #28a745;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-        }
-        .status-unpaid {
-            background: #dc3545;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-        }
-        .invoice-items {
-            margin-top: 20px;
-        }
-        .error-container {
-            text-align: center;
-            padding: 40px 20px;
-        }
-        
-        .error-icon {
-            font-size: 80px;
-            color: #dc3545;
-            margin-bottom: 20px;
-        }
-        
-        .error-title {
-            font-size: 32px;
-            color: #333;
-            margin-bottom: 15px;
-        }
-        
-        .error-message {
-            font-size: 18px;
-            color: #666;
-            margin-bottom: 30px;
-        }
-        
-        .error-button {
-            padding: 12px 30px;
-            font-size: 16px;
-            border-radius: 25px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-        }
-        
-        .error-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-    </style>
+
 </head>
 <body class="bg-light">
+    <nav class="sticky-nav bg-white bg-opacity-90 shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="../../index.php" class="text-2xl font-bold primary-color">MediBalance</a>
+                    </div>
+                    <div class="hidden md:ml-6 md:flex md:space-x-8">
+                        <a href="../../index.php" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900">Home</a>
+                        <a href="../../index.php#features" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900">Features</a>
+                        <a href="../../index.php#about" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900">About</a>
+                        <a href="../../index.php#pricing" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900">Pricing</a>
+                        <a href="../../index.php#contact" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900">Contact</a>
+                        <a href="check_invoice.php" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900">Pay an invoice</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4 ml-8">
+                    <div class="flex-shrink-0">
+                    <a href="../../login/login.php" class="nav-button-white relative inline-flex items-center px-6 py-2 border border-green-500 text-sm font-medium rounded-md transition-colors duration-200">
+    Sign in
+</a>
+                    </div>
+                    <div class="flex-shrink-0">
+                    <a href="../../login/register.php" class="nav-button-green relative inline-flex items-center px-6 py-2 border border-green-500 text-sm font-medium rounded-md transition-colors duration-200">
+    Register
+</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
     <div class="payment-container">
         <?php if ($show_404): ?>
             <div class="error-container">
@@ -152,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invoice_number'])) {
                 <input type="text" name="invoice_number" class="form-control form-control-lg" 
                        placeholder="Enter Invoice Number" required
                        value="<?php echo isset($_POST['invoice_number']) ? htmlspecialchars($_POST['invoice_number']) : ''; ?>">
-                <button type="submit" class="btn btn-primary">Search Invoice</button>
+                <button type="submit" class="btn btn-success">Search Invoice</button>
             </div>
             <?php if ($error_message): ?>
                 <div class="alert alert-danger mt-2"><?php echo $error_message; ?></div>
@@ -191,6 +143,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invoice_number'])) {
             <?php endif; ?>
         <?php endif; ?>
     </div>
+
+    <footer class="bg-gray-800 mt-auto">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <span class="text-2xl font-bold text-white">MediBalance</span>
+                    <p class="mt-4 text-gray-400">
+                        Empowering businesses with modern financial solutions.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">COMPANY</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li><a href="../../index.php#about" class="text-base text-gray-300 hover:text-white">About</a></li>
+                        <li><a href="#" class="text-base text-gray-300 hover:text-white">Careers</a></li>
+                        <li><a href="../../index.php#contact" class="text-base text-gray-300 hover:text-white">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">LEGAL</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li><a href="#" class="text-base text-gray-300 hover:text-white">Privacy</a></li>
+                        <li><a href="#" class="text-base text-gray-300 hover:text-white">Terms</a></li>
+                        <li><a href="#" class="text-base text-gray-300 hover:text-white">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 border-t border-gray-700 pt-8">
+                <p class="text-base text-gray-400 text-center">
+                    © 2024 MediBalance. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!--PayStack JavaScript -->
