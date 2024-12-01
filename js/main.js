@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const currentPath = window.location.pathname;
     const isPatientDashboard = currentPath.includes('/patient_view/');
     const isHospitalDashboard = currentPath.includes('/hospital_view/');
+    const isAdminDashboard = currentPath.includes('/admin/');
     const currentPage = currentPath.split('/').pop() || 'dashboard.php';
 
     // Handle sidebar menu dropdowns
@@ -103,48 +104,58 @@ document.addEventListener('DOMContentLoaded', function() {
     if (pageTitle) {
         // Define titles for both dashboards
         const hospitalTitles = {
-            'dashboard.php': 'Welcome!',
-            'create_invoice.php': 'Create Invoice',
-            'manage_invoices.php': 'Manage Invoices',
-            'download_csv.php': 'Download CSV',
-            'add_product.php': 'Add Product',
-            'manage_products.php': 'Manage Products',
             'add_customer.php': 'Add Customer',
+            'add_product.php': 'Add Product',
+            'create_invoice.php': 'Create Invoice',
+            'dashboard.php': 'Welcome!',
+            'download_csv.php': 'Download CSV',
             'manage_customers.php': 'Manage Customers',
-            'add_user.php': 'Add User',
-            'manage_users.php': 'Manage Users',
-            'profile_settings.php': 'Profile Settings',
-            'change_password.php': 'Change Password',
-            'product.php': 'Products',
-            'view_invoice.php': 'View Invoice',
+            'manage_invoices.php': 'Manage Invoices',
+            'manage_products.php': 'Manage Products',
             'manage_transactions.php': 'Manage Transactions',
-            'manage_wallet.php': 'Wallet Settings',
-            'customers.php': 'Customers'
+            'manage_wallet.php': 'Wallet Settings',            
+            'profile_settings.php': 'Profile Settings',
+            'change_password.php': 'Change Password'
         };
 
         const patientTitles = {
-            'patient_dashboard.php': 'Welcome!',
+            'add_funds.php': 'Add Funds',
             'manage_invoice.php': 'My Invoices',
             'manage_product.php': 'My Services',
-            'add_funds.php': 'Add Funds',
             'manage_transactions.php': 'Transaction History',
+            'manage_wallet.php': 'My Wallet',
+            'patient_dashboard.php': 'Welcome!',
             'pay_invoice.php': 'Pay Invoice',
             'success.php': 'Payment Successful',
             'profile_settings.php': 'Profile Settings',
-            'verify_payment.php': 'Verify Payment',
-            'manage_wallet.php': 'My Wallet'
+            'verify_payment.php': 'Verify Payment'
+        };
+
+        const adminTitles = {
+            'add_user.php': 'Add User',
+            'admindashboard.php': 'Welcome!',
+            'customers.php': 'Customers',
+            'manage_users.php': 'Manage Users',
+            'product.php': 'Products',
+            'view_invoice.php': 'View Invoice',
+            'profile_settings.php': 'Profile Settings',
+            'download_csv.php': 'Download CSV',
+            'change_password.php': 'Change Password'
         };
 
         // Set title based on dashboard type and current page
-        const isDashboardPage = currentPage === 'dashboard.php' || currentPage === 'patient_dashboard.php';
+        const isDashboardPage = currentPage === 'dashboard.php' || currentPage === 'patient_dashboard.php' || currentPage === 'admindashboard.php';
         if (!isDashboardPage || !pageTitle.innerHTML.includes('Welcome!')) {
             if (isHospitalDashboard) {
                 pageTitle.textContent = hospitalTitles[currentPage] || 'Dashboard';
             } else if (isPatientDashboard) {
                 pageTitle.textContent = patientTitles[currentPage] || 'Dashboard';
             }
+            else if (isAdminDashboard) {
+                pageTitle.textContent = adminTitles[currentPage] || 'Dashboard';
         }
     }
+}
 
     // Handle active states for navigation
     const navLinks = document.querySelectorAll('.nav-link');

@@ -34,7 +34,7 @@
             <div class="d-flex flex-column h-100">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a href="dashboard.php" class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : ''; ?>">
+                        <a href="admindashboard.php" class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : ''; ?>">
                             <i class="fas fa-chart-line"></i>
                             <span>Dashboard</span>
                         </a>
@@ -49,19 +49,13 @@
                         <div class="collapse" id="invoicesDropdown">
                             <ul class="nav flex-column ms-3 sub-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="../hospital_view/create_invoice.php">
-                                        <i class="fas fa-plus fa-sm"></i>
-                                        <span>Create Invoice</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="../hospital_view/manage_invoices.php">
+                                    <a class="nav-link" href="../admin/view_invoice.php">
                                         <i class="fas fa-cog fa-sm"></i>
-                                        <span>Manage Invoices</span>
+                                        <span>All Invoices</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="../hospital_view/download_csv.php">
+                                    <a class="nav-link" href="../admin/download_csv.php">
                                         <i class="fas fa-download fa-sm"></i>
                                         <span>Download CSV</span>
                                     </a>
@@ -79,15 +73,39 @@
                         <div class="collapse" id="productsDropdown">
                             <ul class="nav flex-column ms-3 sub-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="../hospital_view/add_product.php">
+                                    <a class="nav-link" href="../admin/product.php">
                                         <i class="fas fa-plus fa-sm"></i>
-                                        <span>Add Product</span>
+                                        <span>See Products</span>
                                     </a>
                                 </li>
-                                <li class="nav-item">
+                                <!-- <li class="nav-item">
                                     <a class="nav-link" href="../hospital_view/manage_products.php">
                                         <i class="fas fa-cog fa-sm"></i>
                                         <span>Manage Products</span>
+                                    </a>
+                                </li> -->
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="#" class="nav-link dropdown-toggle collapsed" data-bs-toggle="collapse" data-bs-target="#usersDropdown" aria-expanded="false">
+                            <i class="fas fa-user-shield"></i>
+                            <span>Users</span>
+                            <i class="fas fa-angle-down"></i>
+                        </a>
+                        <div class="collapse" id="usersDropdown">
+                            <ul class="nav flex-column ms-3 sub-menu">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="../admin/add_user.php">
+                                        <i class="fas fa-plus fa-sm"></i>
+                                        <span>Add User</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="../admin/manage_users.php">
+                                        <i class="fas fa-cog fa-sm"></i>
+                                        <span>Manage Users</span>
                                     </a>
                                 </li>
                             </ul>
@@ -103,9 +121,9 @@
                         <div class="collapse" id="customersDropdown">
                             <ul class="nav flex-column ms-3 sub-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="../hospital_view/add_customer.php">
+                                    <a class="nav-link" href="../admin/customers.php">
                                         <i class="fas fa-plus fa-sm"></i>
-                                        <span>Add Customer</span>
+                                        <span>All Customers</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -118,29 +136,6 @@
                         </div>
                     </li>
                
-                    <li class="nav-item">
-                        <a href="#" class="nav-link dropdown-toggle collapsed" data-bs-toggle="collapse" data-bs-target="#walletDropdown" aria-expanded="false">
-                            <i class="fas fa-wallet"></i>
-                            <span>Wallet</span>
-                            <i class="fas fa-angle-down"></i>
-                        </a>
-                        <div class="collapse" id="walletDropdown">
-                            <ul class="nav flex-column ms-3 sub-menu">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="../hospital_view/manage_transactions.php">
-                                        <i class="fas fa-exchange-alt fa-sm"></i>
-                                        <span>Transactions</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="../hospital_view/manage_wallet.php">
-                                            <i class="fas fa-cog fa-sm"></i>
-                                        <span>Wallet Settings</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
 
                     <li class="nav-item">
                         <a href="#" class="nav-link dropdown-toggle collapsed" data-bs-toggle="collapse" data-bs-target="#settingsDropdown" aria-expanded="false">
@@ -151,13 +146,13 @@
                         <div class="collapse" id="settingsDropdown">
                             <ul class="nav flex-column ms-3 sub-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="../hospital_view/profile_settings.php">
+                                    <a class="nav-link" href="../admin/profile_settings.php">
                                         <i class="fas fa-user-cog fa-sm"></i>
                                         <span>Profile Settings</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="../hospital_view/change_password.php">
+                                    <a class="nav-link" href="../admin/change_password.php">
                                         <i class="fas fa-key fa-sm"></i>
                                         <span>Change Password</span>
                                     </a>
@@ -179,10 +174,10 @@
                         $currentPage = basename($_SERVER['PHP_SELF']);
 
                         // Display Welcome message only on dashboard.php
-                        if ($currentPage === 'dashboard.php') {
+                        if ($currentPage === 'admindashboard.php') {
                             echo 'Welcome! ';
-                            if (isset($_SESSION['user_firstname']) && isset($_SESSION['user_lastname'])) {
-                                echo htmlspecialchars($_SESSION['user_firstname']) . ' ' . htmlspecialchars($_SESSION['user_lastname']);
+                            if (isset($_SESSION['admin_firstname']) && isset($_SESSION['admin_lastname'])) {
+                                echo htmlspecialchars($_SESSION['admin_firstname']) . ' ' . htmlspecialchars($_SESSION['admin_lastname']);
                             }
                         } else {
                             // For other pages, display the page title (this will be updated by main.js)
@@ -202,13 +197,13 @@
                             </div>
                             <span id="userName" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
                                 <?php
-                                    if (isset($_SESSION['user_firstname']) && isset($_SESSION['user_lastname'])) {
-                                    echo htmlspecialchars($_SESSION['user_firstname']) . ' ' . htmlspecialchars($_SESSION['user_lastname']);}
+                                    if (isset($_SESSION['admin_firstname']) && isset($_SESSION['admin_lastname'])) {
+                                    echo htmlspecialchars($_SESSION['admin_firstname']) . ' ' . htmlspecialchars($_SESSION['admin_lastname']);}
                                 ?>
                             </span>
 
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="../hospital_view/profile_settings.php"><i class="fas fa-user-cog me-2"></i>Profile</a></li>
+                                <li><a class="dropdown-item" href="../admin/profile_settings.php"><i class="fas fa-user-cog me-2"></i>Profile</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="../../login/logout.php"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                             </ul>
