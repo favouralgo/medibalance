@@ -117,8 +117,8 @@
                             </ul>
                         </div>
                     </li>
-               
-                    <li class="nav-item">
+                        <!--TO BE IMPLEMENTED IN PRODUCTION-->
+                    <!-- <li class="nav-item">
                         <a href="#" class="nav-link dropdown-toggle collapsed" data-bs-toggle="collapse" data-bs-target="#walletDropdown" aria-expanded="false">
                             <i class="fas fa-wallet"></i>
                             <span>Wallet</span>
@@ -140,9 +140,11 @@
                                 </li>
                             </ul>
                         </div>
-                    </li>
-
-                    <li class="nav-item">
+                    </li> -->
+                    <!--TO BE IMPLEMENTED IN PRODUCTION-->
+                    
+                    <!--TO BE IMPLEMENTED IN PRODUCTION-->
+                    <!-- <li class="nav-item">
                         <a href="#" class="nav-link dropdown-toggle collapsed" data-bs-toggle="collapse" data-bs-target="#settingsDropdown" aria-expanded="false">
                             <i class="fas fa-cog"></i>
                             <span>Settings</span>
@@ -164,7 +166,9 @@
                                 </li>
                             </ul>
                         </div>
-                    </li>
+                    </li> -->
+                    <!--TO BE IMPLEMENTED IN PRODUCTION-->
+
                 </ul>
             </div>
         </nav>
@@ -208,7 +212,7 @@
                             </span>
 
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="../hospital_view/profile_settings.php"><i class="fas fa-user-cog me-2"></i>Profile</a></li>
+                                <!-- <li><a class="dropdown-item" href="../hospital_view/profile_settings.php"><i class="fas fa-user-cog me-2"></i>Profile</a></li> -->
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="../../login/logout.php"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                             </ul>

@@ -1,22 +1,16 @@
 <?php 
 include '../aincludes/header.php';
-require_once('../../controllers/product_controller.php');
+require_once("../../controllers/admin_controller.php");
 
-// Basic authentication check
-if (!isset($_SESSION['user_id']) && !isset($_SESSION['customer_id'])) {
-    header('Location: ../../login/login.php');
-    exit;
-}
-
-// Initialize Product Controller
-$productController = new ProductController();
+// Initialize AdminController
+$adminController = new AdminController();
 
 // Get search and entries parameters with proper defaults
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $entries = isset($_GET['entries']) ? (int)$_GET['entries'] : 10;
 
 // Get filtered products
-$result = $productController->get_all_products_ctr($search, $entries);
+$result = $adminController->get_all_products_ctr($search, $entries);
 error_log("Products result: " . print_r($result, true));
 
 // Ensure $result has a valid structure
@@ -152,31 +146,132 @@ if (!isset($result['success'])) {
     </div>
 </div>
 
-<!-- Delete Product Modal -->
-<div class="modal" id="deleteProductModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Delete Product</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete this product?</p>
-                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Yes, delete</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../../js/main.js"></script>
-<script src="../../js/product.js"></script>
+<script>
+// Search and entries functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
+    const entriesSelect = document.getElementById('entriesSelect');
+    
+    function updateTable() {
+        const searchValue = searchInput.value;
+        const entriesValue = entriesSelect.value;
+        window.location.href = `?search=${encodeURIComponent(searchValue)}&entries=${entriesValue}`;
+    }
+    
+    // Search button click
+    searchButton.addEventListener('click', function() {
+        updateTable();
+    });
+    
+    // Search on enter key
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            updateTable();
+        }
+    });
+    
+    // Entries select change
+    entriesSelect.addEventListener('change', function() {
+        updateTable();
+    });
+});
 
+// Edit product functionality
+function openEditModal(productId) {
+    // Show loading state in modal
+    $('#editProductModal').modal('show');
+    
+    // Fetch product details
+    fetch(`../../actions/admin_get_product.php?id=${productId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Populate form fields
+                document.getElementById('editProductId').value = productId;
+                document.getElementById('editProductName').value = data.data.product_name;
+                document.getElementById('editProductDescription').value = data.data.product_description;
+                document.getElementById('editProductPrice').value = data.data.product_price;
+                document.getElementById('editProductQuantity').value = data.data.product_quantity;
+            } else {
+                Swal.fire('Error', data.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire('Error', 'Failed to load product details', 'error');
+        });
+}
 
+// Delete product functionality
+function openDeleteModal(productId) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            deleteProduct(productId);
+        }
+    });
+}
+
+function deleteProduct(productId) {
+    const formData = new FormData();
+    formData.append('product_id', productId);
+    
+    fetch('../../actions/admin_delete_product.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire('Deleted!', data.message, 'success')
+            .then(() => location.reload());
+        } else {
+            Swal.fire('Error', data.message, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire('Error', 'Failed to delete product', 'error');
+    });
+}
+
+// Handle edit form submission
+document.getElementById('editProductForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    fetch('../../actions/admin_update_product.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            $('#editProductModal').modal('hide');
+            Swal.fire('Success', data.message, 'success')
+            .then(() => location.reload());
+        } else {
+            Swal.fire('Error', data.message, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire('Error', 'Failed to update product', 'error');
+    });
+});
+</script>
 <?php include '../aincludes/footer.php'; ?>

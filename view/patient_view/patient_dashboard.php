@@ -61,7 +61,7 @@ function timeAgo($datetime) {
 <div class="container-fluid">
     <div class="row">
         <!-- Sales Amount -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-4 col-md-8">
             <div class="metric-card sales">
                 <div class="metric-content">
                     <div class="metric-info">
@@ -76,7 +76,7 @@ function timeAgo($datetime) {
         </div>
 
         <!-- Total Invoices -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-4 col-md-8">
             <div class="metric-card invoices">
                 <div class="metric-content">
                     <div class="metric-info">
@@ -91,7 +91,7 @@ function timeAgo($datetime) {
         </div>
 
         <!-- Pending Bills -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-4 col-md-8">
             <div class="metric-card pending">
                 <div class="metric-content">
                     <div class="metric-info">
@@ -106,7 +106,7 @@ function timeAgo($datetime) {
         </div>
 
         <!-- Due Amount -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-4 col-md-8">
             <div class="metric-card due">
                 <div class="metric-content">
                     <div class="metric-info">
@@ -121,7 +121,7 @@ function timeAgo($datetime) {
         </div>
 
         <!-- Paid Bills -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-4 col-md-8">
             <div class="metric-card paid">
                 <div class="metric-content">
                     <div class="metric-info">

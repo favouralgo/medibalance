@@ -3,6 +3,9 @@ password.txt
 # PHP Configuration Files
 actions/customer_action.php
 actions/pay_process.php
+actions/approve_user_action.php
+actions/reject_user_action.php
+
 js/pay.js
 view/patient_view/pay_invoice.php
 view/patient_view/verify_payment.php

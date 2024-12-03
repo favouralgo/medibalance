@@ -14,6 +14,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="../../css/dashboard.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/register.css">
     <link href="../../css/addproduct.css" rel="stylesheet">
     <link href="../../css/manageproduct.css" rel="stylesheet">
     <link href="../../css/createinvoice.css" rel="stylesheet">
@@ -96,12 +97,12 @@
                         </a>
                         <div class="collapse" id="usersDropdown">
                             <ul class="nav flex-column ms-3 sub-menu">
-                                <li class="nav-item">
+                                <!-- <li class="nav-item">
                                     <a class="nav-link" href="../admin/add_user.php">
                                         <i class="fas fa-plus fa-sm"></i>
                                         <span>Add User</span>
                                     </a>
-                                </li>
+                                </li> -->
                                 <li class="nav-item">
                                     <a class="nav-link" href="../admin/manage_users.php">
                                         <i class="fas fa-cog fa-sm"></i>
@@ -126,18 +127,18 @@
                                         <span>All Customers</span>
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="../hospital_view/manage_customers.php">
+                                <!-- <li class="nav-item">
+                                    <a class="nav-link" href="../admin/manage_customers.php">
                                         <i class="fas fa-cog fa-sm"></i>
                                         <span>Manage Customers</span>
                                     </a>
-                                </li>
+                                </li> -->
                             </ul>
                         </div>
                     </li>
                
-
-                    <li class="nav-item">
+                        <!--TO BE IMPLEMENTED IN PRODUCTION-->
+                    <!-- <li class="nav-item">
                         <a href="#" class="nav-link dropdown-toggle collapsed" data-bs-toggle="collapse" data-bs-target="#settingsDropdown" aria-expanded="false">
                             <i class="fas fa-cog"></i>
                             <span>Settings</span>
@@ -159,7 +160,8 @@
                                 </li>
                             </ul>
                         </div>
-                    </li>
+                    </li> -->
+                    <!--TO BE IMPLEMENTED IN PRODUCTION-->
                 </ul>
             </div>
         </nav>
@@ -203,7 +205,7 @@
                             </span>
 
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="../admin/profile_settings.php"><i class="fas fa-user-cog me-2"></i>Profile</a></li>
+                                <!-- <li><a class="dropdown-item" href="../admin/profile_settings.php"><i class="fas fa-user-cog me-2"></i>Profile</a></li> -->
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="../../login/logout.php"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                             </ul>

@@ -1,5 +1,5 @@
 <?php
-require_once("../settings/db_class.php");
+require_once(__DIR__ . "/../settings/db_class.php");
 
 class UserModel extends db_connection {
     public function add_user($user_firstname, $user_lastname, $user_password, $user_phonenumber, $user_country, $user_city, $user_facilityname, $user_email, $user_address) {

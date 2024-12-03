@@ -37,6 +37,7 @@ $(document).ready(function() {
                 }
             },
             error: function() {
+                console.log('Server response:', xhr.responseText);
                 Swal.fire("Error", "An error occurred. Please try again.", "error");
             }
         });
@@ -49,7 +50,7 @@ function validateForm() {
     
     // Validate email
     if (!validateEmail(email)) {
-        Swal.fire('Error', 'Please enter a valid email address. Email must end with @gmail.com.', 'error');
+        Swal.fire('Error', 'Please enter a valid email address', 'error');
         return false;
     }
     
@@ -63,6 +64,6 @@ function validateForm() {
 }
 
 function validateEmail(email) {
-    var re = /^[^\s@]+@(gmail\.com)$/;
+    var re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     return re.test(email);
 }

@@ -1,16 +1,12 @@
 <?php 
 include '../aincludes/header.php';
-require_once("../../controllers/invoice_controller.php");
-
-$invoiceController = new InvoiceController();
+require_once('../../controllers/admin_controller.php');
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $entries = isset($_GET['entries']) ? (int)$_GET['entries'] : 10;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 
-$result = $invoiceController->get_all_invoices_ctr($search, $entries);
-
-if (!$result['success']) {
-    echo "<div class='alert alert-danger'>{$result['message']}</div>";
-}
+$adminController = new AdminController();
+$result = $adminController->get_all_invoices_ctr($search, $entries, $page);
 ?>
 
 <div class="product-list-container">
@@ -36,45 +32,124 @@ if (!$result['success']) {
         </div>
     </div>
 
-    <table class="product-table">
-        <thead>
-            <tr>
-                <th>Invoice Number <i class="fas fa-sort sort-icon"></i></th>
-                <th>Customer <i class="fas fa-sort sort-icon"></i></th>
-                <th>Issue Date <i class="fas fa-sort sort-icon"></i></th>
-                <th>Due Date <i class="fas fa-sort sort-icon"></i></th>
-                <th>Status <i class="fas fa-sort sort-icon"></i></th>
-                <th>Amount</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if ($result['success'] && !empty($result['data'])): ?>
-                <?php foreach ($result['data'] as $invoice): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($invoice['invoice_number']); ?></td>
-                        <td><?php echo htmlspecialchars($invoice['customer_name']); ?></td>
-                        <td><?php echo date('d/m/Y', strtotime($invoice['invoice_date_start'])); ?></td>
-                        <td><?php echo date('d/m/Y', strtotime($invoice['invoice_date_due'])); ?></td>
-                        <td>
-                            <?php
-                            $statusClass = $invoice['status_name'] === 'PAID' ? 'bg-success' : 'bg-warning';
-                            ?>
-                            <span class="badge <?php echo $statusClass; ?>">
-                                <?php echo htmlspecialchars($invoice['status_name']); ?>
-                            </span>
-                        </td>
-                        <td><?php echo '$' . number_format($invoice['invoice_total'], 2); ?></td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php else: ?>
+    <div class="table-responsive">
+        <table class="product-table">
+            <thead>
                 <tr>
-                    <td colspan="6" class="text-center">No invoices found</td>
+                    <th width="15%">Invoice Number <i class="fas fa-sort sort-icon"></i></th>
+                    <th width="20%">Customer <i class="fas fa-sort sort-icon"></i></th>
+                    <th width="20%">Facility</th>
+                    <th width="10%">Amount</th>
+                    <th width="12%">Issue Date <i class="fas fa-sort sort-icon"></i></th>
+                    <th width="12%">Due Date <i class="fas fa-sort sort-icon"></i></th>
+                    <th width="11%">Status <i class="fas fa-sort sort-icon"></i></th>
                 </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <?php if ($result['success'] && !empty($result['data'])): ?>
+                    <?php foreach ($result['data'] as $invoice): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($invoice['invoice_number']); ?></td>
+                            <td><?php echo htmlspecialchars($invoice['customer_name']); ?></td>
+                            <td><?php echo htmlspecialchars($invoice['facility_name']); ?></td>
+                            <td>GHS <?php echo number_format($invoice['invoice_total'], 2); ?></td>
+                            <td><?php echo date('d/m/Y', strtotime($invoice['invoice_date_start'])); ?></td>
+                            <td><?php echo date('d/m/Y', strtotime($invoice['invoice_date_due'])); ?></td>
+                            <td>
+                                <span class="badge <?php echo $invoice['status_name'] === 'PAID' ? 'bg-success' : 'bg-warning'; ?>">
+                                    <?php echo htmlspecialchars($invoice['status_name']); ?>
+                                </span>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="7" class="text-center">No invoices found</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
 
+    <!-- Pagination -->
+    <?php if ($result['success'] && $result['total_pages'] > 1): ?>
+        <div class="pagination-container">
+            <ul class="pagination">
+                <li class="<?php echo $page <= 1 ? 'disabled' : ''; ?>">
+                    <a href="javascript:void(0)" onclick="changePage(<?php echo $page - 1; ?>)">Previous</a>
+                </li>
+                <?php for ($i = 1; $i <= $result['total_pages']; $i++): ?>
+                    <li class="<?php echo $i === $page ? 'active' : ''; ?>">
+                        <a href="javascript:void(0)" onclick="changePage(<?php echo $i; ?>)"><?php echo $i; ?></a>
+                    </li>
+                <?php endfor; ?>
+                <li class="<?php echo $page >= $result['total_pages'] ? 'disabled' : ''; ?>">
+                    <a href="javascript:void(0)" onclick="changePage(<?php echo $page + 1; ?>)">Next</a>
+                </li>
+            </ul>
+        </div>
+    <?php endif; ?>
 </div>
+
+<style>
+/* Add to your existing styles */
+.product-table th, .product-table td {
+    padding: 1rem 0.75rem;
+    white-space: nowrap;
+}
+
+.product-table {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.badge {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    border-radius: 0.25rem;
+    display: inline-block;
+    min-width: 80px;
+    text-align: center;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.pagination li {
+    margin: 0 0.25rem;
+}
+
+.pagination li a {
+    padding: 0.5rem 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.pagination li.active a {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.pagination li.disabled a {
+    color: #6c757d;
+    pointer-events: none;
+    background-color: #fff;
+    border-color: #dee2e6;
+}
+</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -82,10 +157,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchButton = document.getElementById('searchButton');
     const entriesSelect = document.getElementById('entriesSelect');
     
-    function updateTable() {
+    function updateTable(page = 1) {
         const searchValue = searchInput.value;
         const entriesValue = entriesSelect.value;
-        window.location.href = `?search=${encodeURIComponent(searchValue)}&entries=${entriesValue}`;
+        window.location.href = `?search=${encodeURIComponent(searchValue)}&entries=${entriesValue}&page=${page}`;
     }
     
     // Search button click
@@ -105,6 +180,12 @@ document.addEventListener('DOMContentLoaded', function() {
         updateTable();
     });
 });
+
+function changePage(page) {
+    const searchValue = document.getElementById('searchInput').value;
+    const entriesValue = document.getElementById('entriesSelect').value;
+    window.location.href = `?search=${encodeURIComponent(searchValue)}&entries=${entriesValue}&page=${page}`;
+}
 </script>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

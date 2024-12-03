@@ -1,5 +1,5 @@
 <?php
-require_once("../classes/user_class.php");
+require_once(__DIR__ ."/../classes/user_class.php");
 
 class UserController {
     protected $userModel;
