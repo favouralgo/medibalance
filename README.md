@@ -1,45 +1,217 @@
-# MediBalance 🚑💳
+# MediBalance - Healthcare Payment Management System
 
-MediBalance is a robust **medical billing software** designed to streamline financial transactions in the healthcare sector. It empowers hospitals to manage global payments seamlessly, allowing patients and their families to share financial responsibilities without stress. With MediBalance, healthcare providers can focus on patient care while we handle the complexities of billing and financial logistics.
+MediBalance is a B2B2C e-commerce platform designed to streamline medical payment processing and eliminate common issues in healthcare payments such as receipt falsification and payment diversions.
 
-## Features ✨
+## 🌟 Features
 
-- **Global Payment Processing**: Accept payments from anywhere in the world.
-- **Family Contribution**: Enable loved ones to contribute to medical expenses.
-- **Secure Transactions**: Ensure data security and compliance.
-- **User-Friendly Interface**: Easy to navigate for both patients and hospital staff.
+- **Multi-tenant Architecture**
+  - Admin Dashboard for system oversight
+  - Healthcare Facility Interface for service providers
+  - Patient Portal for end-users
+  - Third-party Payment Gateway
 
-## Installation ⚙️
+- **Key Functionalities**
+  - Digital Invoice Generation
+  - Secure Payment Processing
+  - Real-time Payment Tracking
+  - User Authentication & Authorization
+  - Facility Verification System
+  - Third-party Payment Support
+  - Comprehensive Audit Trail
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/favouralgo/medibalance.git
-   ```
-2. Navigate to the project directory:
-   ```bash
-   cd medibalance
-   ```
-3. Install dependencies:
-   ```bash
-   composer install
-   npm install
-   ```
+## 🏗️ Architecture
 
-4. Configure environment variables:
-   - Rename `.env.example` to `.env`.
-   - Update the required fields (e.g., database credentials, payment gateway API keys).
+### System Architecture
+- MVC (Model-View-Controller) Pattern
+- PHP Backend
+- MySQL Database
+- Bootstrap Frontend
+- RESTful API Architecture
 
-5. Run the application:
-   ```bash
-   php artisan serve
-   ```
+### Database Schema
+- Modular table structure
+- Foreign key constraints for data integrity
+- Indexed fields for optimized queries
+- Transaction support for critical operations
 
-## Usage 🚀
+### Security Features
+- Password Hashing (bcrypt)
+- Session Management
+- CSRF Protection
+- Input Sanitization
+- Prepared Statements
 
-1. Access the application via `http://localhost:8000`.
-2. Register your hospital and configure billing options.
-3. Patients can log in, view bills, and make payments.
-4. Family members can contribute directly to patient accounts.
+## 📁 Project Structure
+```
+medibalance/
+├── actions/
+│   ├── approve_user_action.php
+│   ├── delete_user_action.php
+│   ├── update_user_action.php
+│   └── ...
+├── classes/
+│   ├── admin_class.php
+│   ├── user_class.php
+│   └── ...
+├── controllers/
+│   ├── admin_controller.php
+│   ├── user_controller.php
+│   └── ...
+├── settings/
+│   └── db_class.php
+├── view/
+│   ├── admin/
+│   │   ├── dashboard.php
+│   │   ├── users.php
+│   │   └── ...
+│   ├── user/
+│   │   └── ...
+│   └── customer/
+│       └── ...
+└── js/
+    └── main.js
+```
+
+## 🚀 Installation
+
+1. Clone the repository
+```bash
+git clone https://github.com/favouralgo/medibalance.git
+```
+
+2. Import database
+```bash
+mysql -u username -p medibalance < medibalance.sql
+```
+
+3. Configure database connection
+```php
+// Update settings/db_class.php with your credentials
+private $host = "localhost";
+private $db_name = "medibalance";
+private $username = "your_username";
+private $password = "your_password";
+```
+
+4. Configure web server
+- Point document root to project directory
+- Enable URL rewriting if using Apache
+
+## 🔧 Configuration
+
+### Requirements
+- PHP 8.2+
+- MySQL 5.7+
+- Apache/Nginx
+- Composer (for dependencies)
+
+### Dependencies
+- Bootstrap 5.3.2
+- jQuery 3.6.0
+- SweetAlert2
+- Font Awesome
+
+## 🔒 Security Considerations
+
+- All passwords are hashed using bcrypt
+- SQL injection prevention through prepared statements
+- XSS protection via output escaping
+- CSRF tokens for form submissions
+- Secure session handling
+
+## 🗃️ Database Structure
+
+### Core Tables
+- `admin`: System administrators
+- `user`: Healthcare facilities
+- `customer`: Patients
+- `facility`: Healthcare facility details
+- `product`: Medical services/products
+- `invoice`: Payment records
+- `status`: Payment statuses
+
+### Relationship Tables
+- `customer_products`
+- `invoice_product`
+- `approval_history`
+
+## 💻 Usage
+
+### Admin Interface
+```php
+// Login
+POST /login/admin_login.php
+{
+    "email": "admin@example.com",
+    "password": "secure_password"
+}
+```
+
+### Facility Interface
+```php
+// Generate Invoice
+POST /actions/generate_invoice.php
+{
+    "customer_id": "123",
+    "products": [{
+        "product_id": "456",
+        "quantity": 1
+    }]
+}
+```
+
+### Payment Processing
+```php
+// Process Payment
+POST /actions/process_payment.php
+{
+    "invoice_number": "MED/24/123456789",
+    "amount": 100.00
+}
+```
+
+## 🧪 Testing
+
+- Unit tests for core functionality
+- Integration tests for payment processing
+- End-to-end tests for user workflows
+
+## 📚 API Documentation
+
+### Authentication
+All API endpoints require authentication through session cookies or API tokens.
+
+### Endpoints
+```
+GET /api/invoices
+POST /api/payments
+GET /api/users
+POST /api/approve-user
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch
+3. Commit changes
+4. Push to branch
+5. Open pull request
+
+## 📝 License
+
+This project is licensed under the MIT License - see LICENSE file for details.
+
+## 👥 Team
+
+- Lead Developer: @favouralgo
+
+## 🌟 Acknowledgments
+
+- PHP Community
+- Bootstrap Team
+- MySQL Community
+```
+
 
 ## Tech Stack 🛠️
 
