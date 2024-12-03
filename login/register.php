@@ -109,7 +109,7 @@
                 <div class="col-span-1 md:col-span-2">
                     <span class="text-2xl font-bold text-white">MediBalance</span>
                     <p class="mt-4 text-gray-400">
-                        Empowering businesses with modern financial solutions.
+                    Your one-stop solution for cross-border healthcare billing and invoicing.
                     </p>
                     <div class="flex space-x-6 mt-6">
                         <!-- Social Media Icons -->
